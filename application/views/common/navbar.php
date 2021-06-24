@@ -37,7 +37,7 @@
                     <div class="bg-primary py-2 collapse-inner rounded">
                         <a class="collapse-item" href="<?php echo base_url('master/vendor'); ?>">Vendor</a>
                         <a class="collapse-item" href="cards.html">User</a>
-                        <a class="collapse-item" href="cards.html">Product</a>
+                        <a class="collapse-item" href="<?php echo base_url('master/product'); ?>">Product</a>
                     </div>
                 </div>
             </li>

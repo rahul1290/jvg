@@ -7,7 +7,7 @@ class Purchase extends CI_Controller {
 		parent::__construct();
 		$this->load->helper(array('form','url'));
 		$this->load->database();
-		$this->load->model(array('Auth_model','Vendor_model'));
+		$this->load->model(array('Auth_model','Vendor_model','Product_model','Unit_model'));
 		$this->load->library(array('session','form_validation'));
     }
 
@@ -16,6 +16,8 @@ class Purchase extends CI_Controller {
 			redirect('Auth','refresh');
 		} 
 		$data['vendor_list'] = $this->Vendor_model->list();
+		$data['products'] = $this->Product_model->list();
+		$data['units'] = $this->Unit_model->list();
 		$data['header'] = $this->load->view('common/header','',true);
 		$data['navbar'] = $this->load->view('common/navbar','',true);
 		$data['footer'] = $this->load->view('common/footer','',true);
