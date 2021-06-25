@@ -266,6 +266,19 @@
                     	$.ajax({
                         	url : baseUrl + 'vendor' 
                         });
+                    	$.ajax({
+                		  method: "POST",
+                		  url: baseUrl + 'vendor/getdetail',
+                		  dataTye : 'json',
+                		  data: { vendorId: sellerId }
+                		})
+                		  .done(function( response ) {
+							console.log(response['data']);
+// 							$('#contact_no').val(response.contact_no);
+// 		                	$('#alternet_contact').val(response.data['Alternate_contact_no']);	
+// 		                	$('#gst_no').val(response.data['gst_no']);	
+// 		                	$('#address').val(response.data['address']);
+                		  });
                     } else {
                         alert('blank');		
                     }
