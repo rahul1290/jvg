@@ -80,7 +80,18 @@ class Product extends CI_Controller {
 	
 	function getdetail(){
 	   $product_id = $this->input->post('productId'); 
-	   $result = $this->Product_model->getdetail($product_id);
+	   $unitCode = $this->input->post('unitId');
+	   $result = $this->Product_model->getdetail($product_id,$unitCode);
+	   if(count($result)>0){
+	       echo json_encode(array('data'=>$result,'msg'=>'product detail','status'=>200));
+	   } else {
+	       echo json_encode(array('msg'=>'no record found.','status'=>500));
+	   }
+	}
+
+	function getproductUnit(){
+		$product_code = $this->input->post('productId'); 
+	   $result = $this->Product_model->getproductUnit($product_code);
 	   if(count($result)>0){
 	       echo json_encode(array('data'=>$result,'msg'=>'product detail','status'=>200));
 	   } else {

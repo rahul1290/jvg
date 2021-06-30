@@ -11,5 +11,12 @@
     <!-- Custom styles for this template-->
     <link href="<?php echo base_url('assest/');?>css/sb-admin-2.css" rel="stylesheet">
     <link href="<?php echo base_url('assest/');?>css/dataTables.min.css" rel="stylesheet">
+    
+    <style>
+        .haveerror {
+            color: red;
+            border-color: red;
+        }
+    </style>
 </head>
 <input type="hidden" id="baseurl" value="<?php echo base_url();?>" />

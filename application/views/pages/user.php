@@ -21,43 +21,57 @@
                             <!-- Default Card Example -->
                             <div class="card mb-4">
                                 <div id="cardheading" class="card-header text-center text-light bg-secondary">
-                                    ADD NEW PRODUCT
+                                    ADD NEW USER
                                 </div>
                                 <div class="card-body">
                                 	<p class="text-center text-danger.Try again..."><?php echo $this->session->flashdata('msg'); ?></p>
-                                    <form name="f1" method="POST" action=<?php echo base_url('product/create');?>>
+                                    <form name="f1" method="POST" action=<?php echo base_url('user/create');?>>
                                         <div class="form-group row">
-                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Name<span class="text-danger">*</span></label>
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">FName<span class="text-danger">*</span></label>
                                             <div class="col-sm-9">
-                                            	<input type="hidden" id="productid" name="productid" />
-                                            	<input type="text" class="form-control form-control-sm" id="name" name="name" placeholder="Product Name" value="<?php echo set_value('name');?>">
-                                            	<?php echo form_error('name'); ?>
+                                            	<input type="hidden" id="userid" name="userid" />
+                                            	<input type="text" class="form-control form-control-sm" id="fname" name="fname" placeholder="first Name" value="<?php echo set_value('fname');?>">
+                                            	<?php echo form_error('fname'); ?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Code<span class="text-danger">*</span></label>
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">LName<span class="text-danger">*</span></label>
                                             <div class="col-sm-9">
-                                            	<input type="text" class="form-control form-control-sm" id="code" name="code" placeholder="Product Code" value="<?php echo set_value('contact'); ?>">
-                                            	<?php echo form_error('code'); ?>
+                                            	<input type="text" class="form-control form-control-sm" id="lname" name="lname" placeholder="last Name" value="<?php echo set_value('lname');?>">
+                                            	<?php echo form_error('lname'); ?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Unit<span class="text-danger">*</span></label>
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">UName<span class="text-danger">*</span></label>
                                             <div class="col-sm-9">
-                                            	<select class="form-control" id="unit" name="unit">
-                                                    <option value="">Select Unit</option>
-                                                    <?php foreach($unit_list as $unit){ ?>
-                                                        <option value="<?php echo $unit['unit_id']?>"><?php echo $unit['name']; ?></option>
-                                                    <?php } ?>
-                                                </select>
-                                            	<?php echo form_error('unit'); ?>
+                                            	<input type="text" class="form-control form-control-sm" id="uname" name="uname" placeholder="User Name" value="<?php echo set_value('uname');?>">
+                                            	<?php echo form_error('uname'); ?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">PPU<span class="text-danger">*</span></label>
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Contact<span class="text-danger">*</span></label>
                                             <div class="col-sm-9">
-                                            	<input type="number" class="form-control form-control-sm" id="ppu" name="ppu" placeholder="Price Per Unit" value="<?php echo set_value('gst_no');?>">
-                                            	<?php echo form_error('ppu'); ?>
+                                            	<input type="text" class="form-control form-control-sm" id="contact" name="contact" placeholder="Vendor Contact" value="<?php echo set_value('contact'); ?>">
+                                            	<?php echo form_error('contact'); ?>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">User Type<span class="text-danger">*</span></label>
+                                            <div class="col-sm-9">
+                                            	<select class="form-control" name="user_type" id="user_type">
+                                            		<option value="">Select user type</option>
+                                            		<?php foreach($user_types as $usert){ ?>
+                                                		<option value="<?php echo $usert['user_type_id']; ?>"><?php echo $usert['type']; ?></option>
+                                                	<?php } ?>
+                                            	</select>
+                                            	<?php echo form_error('user_type'); ?>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Password<span class="text-danger">*</span></label>
+                                            <div class="col-sm-9">
+                                            	<input type="text" class="form-control form-control-sm" id="password" name="password" placeholder="Password" value="<?php echo set_value('password');?>">
+                                            	<?php echo form_error('password'); ?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -76,32 +90,32 @@
                             <!-- Default Card Example -->
                             <div class="card mb-4">
                                 <div class="card-header text-center text-light bg-secondary">
-                                    PRODUCT LIST
+                                    USER LIST
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="dataTables_wrapper dt-bootstrap4" id="productTable">
+                                        <table class="dataTables_wrapper dt-bootstrap4" id="vendorTable">
                                             <thead>
                                             	<tr>
                                                     <th>S.No.</th>
                                                     <th>Name</th>
-                                                    <th>Code</th>
-                                                    <th>PPU</th>
+                                                    <th>Uname</th>
+                                                    <th>Contact No.</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                             	<?php
                                             	$c = 0;
-                                            	foreach($product_list as $product){ ?>
+                                            	foreach($user_list as $user){ ?>
                                                     <tr>
                                                         <td><?php echo ++$c;?></td>
-                                                        <td><?php echo $product['name']; ?></td>
-                                                        <td><?php echo $product['code']; ?></td>
-                                                        <td><?php echo $product['ppu']; ?></td>
+                                                        <td><?php echo $user['fname'].' '.$user['lname']; ?></td>
+                                                        <td><?php echo $user['uname']; ?></td>
+                                                        <td><?php echo $user['contact_no']; ?></td>
                                                         <td>
-                                                        	<a href="javascript:void(0);" class="edit" data-pid="<?php echo $product['product_id'];?>"><i class="fas fa-pencil-alt"></i></a>
-                                                        	<a href="javascript:void(0);" class="delete" data-pid="<?php echo $product['product_id'];?>"><i class="fas fa-trash-alt"></i></a>
+                                                        	<a href="javascript:void(0);" class="edit" data-uid="<?php echo $user['user_id'];?>"><i class="fas fa-pencil-alt"></i></a>
+                                                        	<a href="javascript:void(0);" class="delete" data-uid="<?php echo $user['user_id'];?>"><i class="fas fa-trash-alt"></i></a>
 														</td>
                                                     </tr>
                                                 <?php } ?>
@@ -133,17 +147,17 @@
         	var baseUrl = $('#baseurl').val();
         	
         	$(document).on('click','.edit',function(){
-        		var productId = $(this).data('pid');
-        		$('#cardheading').html('UPDATE PRODUCT');
-        		$('#productid').val(productId);
+        		var userId = $(this).data('uid');
+        		$('#cardheading').html('UPDATE USER');
+        		$('#userid').val(userId);
         		$('#create').hide();
         		$('#update').show();
         		$.ajax({
-        			url : baseUrl+'product/getdetail/',
+        			url : baseUrl+'user/getdetail/',
         			type : 'POST',
         			dataType : 'JSON',
         			data : {
-        				productId : productId
+        				userId : userId
         			},
 //         			beforeSend : function(){
 //         				$('#loadermodal').modal({
@@ -153,11 +167,14 @@
 //         				});
 //         			},
         			success : function(response){
+        				console.log(response);
         				if(response.status == 200){
-        					$('#name').val(response.data[0].name);
-        					$('#code').val(response.data[0].code);
-        					$('#unit').val(response.data[0].unit_id);
-        					$('#ppu').val(response.data[0].ppu);
+        					$('#fname').val(response.data[0].fname);
+        					$('#lname').val(response.data[0].lname);
+        					$('#uname').val(response.data[0].uname);
+        					$('#contact').val(response.data[0].contact_no);
+        					$('#user_type').val(response.data[0].user_type_id);
+        					$('#password').val(response.data[0].password);
         				}
         			}
         		});
@@ -166,14 +183,14 @@
         	$(document).on('click','.delete',function(){
         		let c = confirm('Are you sure!');
         		if(c){
-        			let productId = $(this).data('pid');
+        			let userId = $(this).data('uid');
         			var that = this;
         			$.ajax({
-            			url : baseUrl+'product/delete/',
+            			url : baseUrl+'user/delete/',
             			type : 'POST',
             			dataType : 'JSON',
             			data : {
-            				productId : productId
+            				userId : userId
             			},
     //         			beforeSend : function(){
     //         				$('#loadermodal').modal({
@@ -195,14 +212,14 @@
         	});
         	
         	$(document).on('click','#reset',function(){
-        		$('#cardheading').html('ADD NEW PRODUCT');
-                $('#productid').val('');
+        		$('#cardheading').html('ADD NEW VENDOR');
+                $('#userid').val();
         		$('#create').show();
         		$('#update').hide();
         	});
         	
         
-            $('#productTable').DataTable({
+            $('#vendorTable').DataTable({
                 //dom: 'Bfrtip',
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'

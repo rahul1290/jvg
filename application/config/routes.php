@@ -53,5 +53,7 @@ $route['default_controller'] = 'auth';
 
 $route['master/vendor'] = 'Vendor/index';
 $route['master/product'] = 'Product/index';
+$route['master/user'] = 'User/index';
+$route['master/customer'] = 'Customer/index';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

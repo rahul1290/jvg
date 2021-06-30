@@ -15,9 +15,19 @@ class Product_model extends CI_Model{
         return $result;
     }
     
-    function getdetail($productId){
-        $this->db->select('*');
-        return $result = $this->db->get_where('products',array('status'=>1,'product_id'=>$productId))->result_array();
+    function getdetail($productId,$unitCode){
+        
+        if(!is_null($unitCode)){
+            $this->db->select('*');
+            $result = $this->db->get_where('products',array('product_id'=>$productId,'status'=>1))->result_array();
+            
+            $this->db->select('*');
+            $this->db->where('unit_id',$unitCode);
+            return $result = $this->db->get_where('products',array('status'=>1,'code'=>$result[0]['code']))->result_array();
+        } else {
+            $this->db->select('*');
+            return $result = $this->db->get_where('products',array('status'=>1,'product_id'=>$productId))->result_array();
+        }
     }
     
     function update($data){
@@ -36,5 +46,13 @@ class Product_model extends CI_Model{
         $this->db->where('product_id',$productId);
         $this->db->update('products',array('status'=>0));
         return true;
+    }
+
+    function getproductUnit($productId){
+        $this->db->select('code');
+        $result = $this->db->get_where('products',array('status'=>1,'product_id'=>$productId))->result_array();
+
+        $result = $this->db->query("SELECT * FROM unit WHERE unit_id in (select unit_id from products where code = '". $result[0]['code'] ."')")->result_array();
+        return $result;
     }
 }

@@ -21,48 +21,57 @@
                             <!-- Default Card Example -->
                             <div class="card mb-4">
                                 <div id="cardheading" class="card-header text-center text-light bg-secondary">
-                                    ADD NEW PRODUCT
+                                    ADD NEW CUSTOMER
                                 </div>
                                 <div class="card-body">
                                 	<p class="text-center text-danger.Try again..."><?php echo $this->session->flashdata('msg'); ?></p>
-                                    <form name="f1" method="POST" action=<?php echo base_url('product/create');?>>
+                                    <form name="f1" method="POST" action=<?php echo base_url('customer/create');?>>
                                         <div class="form-group row">
                                             <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Name<span class="text-danger">*</span></label>
                                             <div class="col-sm-9">
-                                            	<input type="hidden" id="productid" name="productid" />
-                                            	<input type="text" class="form-control form-control-sm" id="name" name="name" placeholder="Product Name" value="<?php echo set_value('name');?>">
+                                            	<input type="hidden" id="customerid" name="customerid" />
+                                            	<input type="text" class="form-control form-control-sm" id="name" name="name" placeholder="Customer Name" value="<?php echo set_value('name');?>">
                                             	<?php echo form_error('name'); ?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Code<span class="text-danger">*</span></label>
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">GST No.<span class="text-danger">*</span></label>
                                             <div class="col-sm-9">
-                                            	<input type="text" class="form-control form-control-sm" id="code" name="code" placeholder="Product Code" value="<?php echo set_value('contact'); ?>">
-                                            	<?php echo form_error('code'); ?>
+                                            	<input type="text" class="form-control form-control-sm" id="gst_no" name="gst_no" placeholder="GST no." value="<?php echo set_value('gst_no');?>" maxlength="15">
+                                            	<?php echo form_error('gst_no'); ?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Unit<span class="text-danger">*</span></label>
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Contact<span class="text-danger">*</span></label>
                                             <div class="col-sm-9">
-                                            	<select class="form-control" id="unit" name="unit">
-                                                    <option value="">Select Unit</option>
-                                                    <?php foreach($unit_list as $unit){ ?>
-                                                        <option value="<?php echo $unit['unit_id']?>"><?php echo $unit['name']; ?></option>
-                                                    <?php } ?>
-                                                </select>
-                                            	<?php echo form_error('unit'); ?>
+                                            	<input type="text" class="form-control form-control-sm" id="contact_no" name="contact_no" placeholder="Contact no." value="<?php echo set_value('contact_no');?>">
+                                            	<?php echo form_error('contact_no'); ?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">PPU<span class="text-danger">*</span></label>
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Alternet No.</label>
                                             <div class="col-sm-9">
-                                            	<input type="number" class="form-control form-control-sm" id="ppu" name="ppu" placeholder="Price Per Unit" value="<?php echo set_value('gst_no');?>">
-                                            	<?php echo form_error('ppu'); ?>
+                                            	<input type="text" class="form-control form-control-sm" id="alternet_no" name="alternet_no" placeholder="Alternet no." value="<?php echo set_value('alternet_no'); ?>">
+                                            	<?php echo form_error('alternet_no'); ?>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Email-Id</label>
+                                            <div class="col-sm-9">
+                                            	<input type="email" class="form-control form-control-sm" id="email" name="email" placeholder="email" value="<?php echo set_value('email'); ?>">
+                                            	<?php echo form_error('email'); ?>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Address<span class="text-danger">*</span></label>
+                                            <div class="col-sm-9">
+                                            	<textarea id="address" name="address" class="form-control" rows="5"><?php echo set_value('address');?></textarea>
+                                            	<?php echo form_error('address'); ?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <div class="offset-3 col-sm-9">
-                                            	<input type="submit" id="create" class="btn btn-success" value="Create"/>
+                                            	<input type="submit" id="create" class="btn btn-success" value="Add Customer"/>
                                             	<input type="submit" id="update" style="display: none;" class="btn btn-warning" value="Update"/>
                                             	<input type="reset" id="reset" class="btn btn-secondary" value="Cancel"/>
                                             </div>
@@ -76,32 +85,32 @@
                             <!-- Default Card Example -->
                             <div class="card mb-4">
                                 <div class="card-header text-center text-light bg-secondary">
-                                    PRODUCT LIST
+                                    CUSTOMER LIST
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="dataTables_wrapper dt-bootstrap4" id="productTable">
+                                        <table class="dataTables_wrapper dt-bootstrap4" id="vendorTable">
                                             <thead>
                                             	<tr>
                                                     <th>S.No.</th>
                                                     <th>Name</th>
-                                                    <th>Code</th>
-                                                    <th>PPU</th>
+                                                    <th>GST No.</th>
+                                                    <th>Contact No.</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                             	<?php
                                             	$c = 0;
-                                            	foreach($product_list as $product){ ?>
+                                            	foreach($customer_list as $customer){ ?>
                                                     <tr>
                                                         <td><?php echo ++$c;?></td>
-                                                        <td><?php echo $product['name']; ?></td>
-                                                        <td><?php echo $product['code']; ?></td>
-                                                        <td><?php echo $product['ppu']; ?></td>
+                                                        <td><?php echo $customer['customer_name']; ?></td>
+                                                        <td><?php echo $customer['gst_no']; ?></td>
+                                                        <td><?php echo $customer['contact_no'].','.$customer['alternet_no']; ?></td>
                                                         <td>
-                                                        	<a href="javascript:void(0);" class="edit" data-pid="<?php echo $product['product_id'];?>"><i class="fas fa-pencil-alt"></i></a>
-                                                        	<a href="javascript:void(0);" class="delete" data-pid="<?php echo $product['product_id'];?>"><i class="fas fa-trash-alt"></i></a>
+                                                        	<a href="javascript:void(0);" class="edit" data-cid="<?php echo $customer['id'];?>"><i class="fas fa-pencil-alt"></i></a>
+                                                        	<a href="javascript:void(0);" class="delete" data-cid="<?php echo $customer['id'];?>"><i class="fas fa-trash-alt"></i></a>
 														</td>
                                                     </tr>
                                                 <?php } ?>
@@ -133,17 +142,17 @@
         	var baseUrl = $('#baseurl').val();
         	
         	$(document).on('click','.edit',function(){
-        		var productId = $(this).data('pid');
-        		$('#cardheading').html('UPDATE PRODUCT');
-        		$('#productid').val(productId);
+        		var customerId = $(this).data('cid');
+        		$('#cardheading').html('UPDATE CUSTOMER');
+        		$('#customerid').val(customerId);
         		$('#create').hide();
         		$('#update').show();
         		$.ajax({
-        			url : baseUrl+'product/getdetail/',
+        			url : baseUrl+'customer/getdetail/',
         			type : 'POST',
         			dataType : 'JSON',
         			data : {
-        				productId : productId
+        				customerId : customerId
         			},
 //         			beforeSend : function(){
 //         				$('#loadermodal').modal({
@@ -153,11 +162,14 @@
 //         				});
 //         			},
         			success : function(response){
+        				console.log(response);
         				if(response.status == 200){
-        					$('#name').val(response.data[0].name);
-        					$('#code').val(response.data[0].code);
-        					$('#unit').val(response.data[0].unit_id);
-        					$('#ppu').val(response.data[0].ppu);
+        					$('#name').val(response.data[0].customer_name);
+        					$('#gst_no').val(response.data[0].gst_no);
+        					$('#contact_no').val(response.data[0].contact_no);
+        					$('#alternet_no').val(response.data[0].alternet_no);
+        					$('#email').val(response.data[0].email);
+        					$('#address').val(response.data[0].address);
         				}
         			}
         		});
@@ -166,14 +178,14 @@
         	$(document).on('click','.delete',function(){
         		let c = confirm('Are you sure!');
         		if(c){
-        			let productId = $(this).data('pid');
+        			let customerId = $(this).data('cid');
         			var that = this;
         			$.ajax({
-            			url : baseUrl+'product/delete/',
+            			url : baseUrl+'customer/delete/',
             			type : 'POST',
             			dataType : 'JSON',
             			data : {
-            				productId : productId
+            				customerId : customerId
             			},
     //         			beforeSend : function(){
     //         				$('#loadermodal').modal({
@@ -195,14 +207,14 @@
         	});
         	
         	$(document).on('click','#reset',function(){
-        		$('#cardheading').html('ADD NEW PRODUCT');
-                $('#productid').val('');
+        		$('#cardheading').html('ADD NEW VENDOR');
+                $('#customerid').val('');
         		$('#create').show();
         		$('#update').hide();
         	});
         	
         
-            $('#productTable').DataTable({
+            $('#vendorTable').DataTable({
                 //dom: 'Bfrtip',
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'

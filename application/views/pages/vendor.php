@@ -51,7 +51,7 @@
                                         <div class="form-group row">
                                             <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">GST No.<span class="text-danger">*</span></label>
                                             <div class="col-sm-9">
-                                            	<input type="text" class="form-control form-control-sm" id="gst_no" name="gst_no" placeholder="GST No." value="<?php echo set_value('gst_no');?>">
+                                            	<input type="text" class="form-control form-control-sm" id="gst_no" name="gst_no" placeholder="GST No." value="<?php echo set_value('gst_no');?>" maxlength="15">
                                             	<?php echo form_error('gst_no'); ?>
                                             </div>
                                         </div>
@@ -199,6 +199,7 @@
         	
         	$(document).on('click','#reset',function(){
         		$('#cardheading').html('ADD NEW VENDOR');
+                $('#vendorid').val('');
         		$('#create').show();
         		$('#update').hide();
         	});
