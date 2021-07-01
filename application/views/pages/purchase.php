@@ -278,12 +278,11 @@
         		
         		
         		if(formvalid){
-					billPreview();
+					billPreview(1);
             	}
             });
 
-			function billPreview(){
-				console.log(items.length);
+			function billPreview(i){
 				temp = {};
 				temp['item'] = $('#item').val();
 				temp['itemText'] = $('#item option:selected').text();
@@ -294,8 +293,12 @@
 				temp['total'] = $('#total').val();
 				temp['gst'] = $('#item_gst').val();
 				temp['discount'] = $('#item_discount').val();
-				temp['total_with_gst'] = $('#item_grand_total').val();
-				items.push(temp);
+				temp['	total_with_gst'] = $('#item_grand_total').val();
+				
+				if(i) {    
+					items.push(temp);
+				}
+				
 				$('#item,#unit,#ppu,#quantity').val('');
 				var x = '<table class=" table-bordered text-center table-sm">'+
 							'<thead><tr>'+
@@ -335,13 +338,9 @@
             
             
             $(document).on('click','.item-del',function(){
-				
             	let index = $(this).data('index');
             	items.splice(index,1);
-				//delete items[index];
-            	$(this).closest('tr').hide();
-				console.log(items);
-            	billPreview();
+            	billPreview(0);
             });
 
 
