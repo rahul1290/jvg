@@ -10,8 +10,10 @@ class Product_model extends CI_Model{
     }
     
     function list(){
-        $this->db->select('*');
-        $result = $this->db->get_where('products',array('status'=>1))->result_array();
+        $this->db->select('p.*,u.name as unitname');
+        $this->db->join('unit u','u.unit_id = p.unit_id');
+        $this->db->order_by('p.created_at','desc');
+        $result = $this->db->get_where('products p',array('p.status'=>1))->result_array();
         return $result;
     }
     

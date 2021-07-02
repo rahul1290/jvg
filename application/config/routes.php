@@ -53,6 +53,7 @@ $route['default_controller'] = 'auth';
 
 $route['master/vendor'] = 'Vendor/index';
 $route['master/product'] = 'Product/index';
+$route['purchase/list'] = 'Purchase/purchase_list';
 $route['master/user'] = 'User/index';
 $route['master/customer'] = 'Customer/index';
 $route['404_override'] = '';

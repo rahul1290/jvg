@@ -37,14 +37,14 @@
                                         <div class="form-group row">
                                             <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Contact<span class="text-danger">*</span></label>
                                             <div class="col-sm-9">
-                                            	<input type="text" class="form-control form-control-sm" id="contact" name="contact" placeholder="Vendor Contact" value="<?php echo set_value('contact'); ?>">
+                                            	<input type="text" class="form-control form-control-sm" id="contact" name="contact" placeholder="Vendor Contact" maxlength="10" value="<?php echo set_value('contact'); ?>">
                                             	<?php echo form_error('contact'); ?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Alternet No.</label>
                                             <div class="col-sm-9">
-                                            	<input type="text" class="form-control form-control-sm" id="alternet_contact" name="alternet_contact" placeholder="Alternet No." value="<?php echo set_value('alternet_contact'); ?>">
+                                            	<input type="text" class="form-control form-control-sm" id="alternet_contact" name="alternet_contact" placeholder="Alternet No." maxlength="10" value="<?php echo set_value('alternet_contact'); ?>">
                                             	<?php echo form_error('alternet_contact'); ?>
                                             </div>
                                         </div>

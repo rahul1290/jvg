@@ -1,4 +1,4 @@
-<body id="page-top">
+	<body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
@@ -30,7 +30,7 @@
                                     	<div class="form-row">
                                             <div class="form-group col-md-6">
                                               <label for="inputEmail4">Bill No.<span class="text-danger">*</span></label>
-                                              <input type="text" class="form-control form-control-sm" id="billno" name="billno" placeholder="bill no" value="<?php echo set_value('name');?>">
+                                              <input type="text" class="form-control form-control-sm" id="billno" name="billno" placeholder="bill no" value="<?php echo $billno;?>">
                                               <div id="billno_error" class="text-danger" style="display: none;"></div>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -95,7 +95,7 @@
 															<option value="<?php echo $product['product_id'];?>"><?php echo $product['name']; ?>[<?php echo $product['code']; ?>]</option>
 														<?php }?>
 													</select>
-                                            		<input type="number" id="quantity" placeholder="Quantity" class="mt-2 mr-2"/>
+                                            		<input type="number" id="quantity" placeholder="Quantity" min="0" class="mt-2 mr-2"/>
 													<select id="unit" name="unit" class="mt-2 mr-2">
 														<option value="">Select unit</option>
 													</select>
@@ -105,20 +105,20 @@
 													</div>
 												</div>
                                             	<div class="mt-2">
-													<table border="1" class="text-light">
+													<table class="text-light">
 														<tr>
 															<td><label>Total</label></td>
-															<td><input type="text" id="total" value="0"></td>
+															<td>:<input type="text" id="total" value="0"></td>
 														</tr>
 														<tr>
 															<td><label>GST</label></td>
-															<td><input type="text" id="item_gst" value="0"></td>
+															<td>:<input type="text" id="item_gst" value="0"></td>
 														</tr>
 														<tr>
 															<td><label>Discount</label></td>
 															<td>
 																<div class="input-group">
-																	<input type="text" id="item_discount" name="item_discount" placeholder="discount"  value="0">
+																	:<input type="text" id="item_discount" name="item_discount" placeholder="discount"  value="0">
 																	<div class="input-group-append">
 																		<span class="input-group-text" id="basic-addon2">%</span>
 																	</div>
@@ -127,7 +127,7 @@
 														</tr>
 														<tr>
 															<td><label>Grand total</label></td>
-															<td><input type="text" id="item_grand_total" value="0"></td>
+															<td>:<input type="text" id="item_grand_total" value="0"></td>
 														</tr>
 														<tr>
 															<td></td>
@@ -293,14 +293,14 @@
 				temp['total'] = $('#total').val();
 				temp['gst'] = $('#item_gst').val();
 				temp['discount'] = $('#item_discount').val();
-				temp['	total_with_gst'] = $('#item_grand_total').val();
+				temp['total_with_gst'] = $('#item_grand_total').val();
 				
 				if(i) {    
 					items.push(temp);
 				}
 				
 				$('#item,#unit,#ppu,#quantity').val('');
-				var x = '<table class=" table-bordered text-center table-sm">'+
+				var x = '<table class="table-bordered table-striped text-center table-sm">'+
 							'<thead><tr>'+
 							'<th>sno.</th>'+
 							'<th>Item</th>'+
@@ -313,7 +313,11 @@
 							'<th>With GST</th>'+
 							'<th></th>'+	
 						'</tr></thead><tbody>';
+				var totalBill = 0;
+				var totalBillGst = 0;		
 				$.each(items,function(key,value){
+					totalBill = totalBill + parseInt(value.total);
+					totalBillGst = totalBillGst + parseInt(value.total_with_gst);
 					x = x + '<tr>'+
 								'<td>'+ parseInt(key+1) +'</td>'+
 								'<td>'+ value.itemText +'</td>'+
@@ -327,6 +331,13 @@
 								'<td><input type="button" value="del" data-index="'+ key +'" class="btn btn-danger item-del"/></td>'+
 							'</tr>';
 				});
+				x = x + '<tr class="bg-dark text-light">'+
+							'<td colspan="5">GrandTotal</td>'+
+							'<td>'+ totalBill +'</td>'+
+							'<td></td>'+
+							'<td></td>'+
+							'<td colspan="2">'+ totalBillGst +'</td>'+
+						'</tr>';  
 				x = x + '</tbody></table>';
 				$('#bill_items').html(x).show();
 
@@ -387,8 +398,6 @@
             });
             
             $(document).on('click','#create',function(){
-				alert(items.length);
-				return false;
             	var formvalid = true;
             	if(items.length < 1){
             		alert('Please select atlease one item to purchse.');
@@ -479,6 +488,7 @@
 							if(response.status == 200){
 								alert(response.msg);
 								location.reload();
+								window.location.href = baseUrl + '/purchase/list';
 							} else {
 								alert(response.msg);
 							}
@@ -511,7 +521,10 @@
 				});	
             });
 
-
+			$(document).on('keyup','#ppu',function(){	
+				$('#quantity').trigger('keyup');
+			});
+			
 			$(document).on('change','#unit',function(){
 				var productId = $('#item').val();
 				var unitId = $('#unit').val();

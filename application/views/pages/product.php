@@ -80,12 +80,13 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="dataTables_wrapper dt-bootstrap4" id="productTable">
+                                        <table class="dataTables_wrapper dt-bootstrap4 table-striped" id="productTable">
                                             <thead>
                                             	<tr>
                                                     <th>S.No.</th>
                                                     <th>Name</th>
                                                     <th>Code</th>
+                                                    <th>Unit</th>
                                                     <th>PPU</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -98,6 +99,7 @@
                                                         <td><?php echo ++$c;?></td>
                                                         <td><?php echo $product['name']; ?></td>
                                                         <td><?php echo $product['code']; ?></td>
+                                                        <td><?php echo $product['unitname']; ?></td>
                                                         <td><?php echo $product['ppu']; ?></td>
                                                         <td>
                                                         	<a href="javascript:void(0);" class="edit" data-pid="<?php echo $product['product_id'];?>"><i class="fas fa-pencil-alt"></i></a>

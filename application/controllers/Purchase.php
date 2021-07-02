@@ -12,6 +12,7 @@ class Purchase extends CI_Controller {
     }
 
 	function index(){
+	    $data['billno'] = 'jvg_'.rand(1,99).'_'.date('dmy');
 		if($this->session->userdata('userId') == null){
 			redirect('Auth','refresh');
 		} 
@@ -59,6 +60,7 @@ class Purchase extends CI_Controller {
 	    }
 	    
 	    $purchaseData['bill_no'] = $this->input->post('bill_no');
+	    $purchaseData['billdate'] = $this->input->post('billdate');
 	    $purchaseData['vendor_id'] = 1;
 	    $purchaseData['product_total_amount'] = $product_total_amount;
 	    $purchaseData['purchase_date'] = date("Y-m-d", strtotime($this->input->post('billdate')));
@@ -101,6 +103,46 @@ class Purchase extends CI_Controller {
 	//////////////////////////////////////////////////////////////////////////////////////
 	
 	function purchase_list(){
+	    if($this->session->userdata('userId') == null){
+	        redirect('Auth','refresh');
+	    }
+	    //$data['purchase_list'] = $this->Purchase_model->purchase_list();
+	    $data['header'] = $this->load->view('common/header','',true);
+	    $data['navbar'] = $this->load->view('common/navbar','',true);
+	    $data['footer'] = $this->load->view('common/footer','',true);
+	    $data['topbar'] = $this->load->view('common/topbar','',true);
+	    $data['copyright'] = $this->load->view('common/copyright','',true);
+	    $data['body'] = $this->load->view('pages/purchaseList',$data,true);
+	    $this->load->view('layout',$data);
+	}
+	
+	function purchase_list_ajax(){
+	    if($this->input->post('from_date') == ''){
+	        $data['from_date'] = date('Y-m-01');
+	    } else {
+	        $data['from_date'] = $this->input->post('from_date');
+	    }
 	    
+	    if($this->input->post('to_date') == ''){
+	        $data['to_date'] = date('Y-m-t');
+	    } else {
+	        $data['to_date'] = $this->input->post('to_date');
+	    }
+	    
+	    $purchase_list = $this->Purchase_model->purchase_list($data);
+	    if(count($purchase_list)>0){
+	       echo json_encode(array('data'=>$purchase_list,'status'=>200));
+	    } else {
+	       echo json_encode(array('status'=>500));
+	    }
+	}
+	
+	function purchase_bill_detail_ajax(){
+	    $data['billno'] = $this->input->post('bill_no');
+	    
+	    $data['billdetail'] = $this->Purchase_model->purchase_bill_detail($data);
+	    $data['items'] = $this->Purchase_model->purchase_billitem_detail($data['billdetail'][0]['purchase_id']);
+	    //print_r($data); die;
+	    echo json_encode(array('data'=>$data,'status'=>200));
 	}
 }
