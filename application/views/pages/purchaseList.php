@@ -28,9 +28,9 @@
                                     
                                     <div class="p-3 mb-4 bg-light text-right">
                                     	<label>From Date</label>
-                                    	<input type="date" id="from-date" name="from-date" value="<?php echo date('Y-m-01'); ?>"/>
+                                    	<input type="text" id="from-date" name="from-date" value="<?php echo date('01/01/Y'); ?>"/>
                                     	<label>To Date</label>
-                                    	<input type="date" id="to-date" name="to-date" value="<?php echo date('Y-m-t'); ?>" />
+                                    	<input type="text" id="to-date" name="to-date" value="<?php echo date('t/12/Y'); ?>" />
                                     	<input type="button" value="Search" id="search"/>
                                     </div>
                                     <table class="table table-striped table-bordered" id="purchaseTable">
@@ -83,8 +83,7 @@
             
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Print</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>	
           </div>
         </div>
       </div>
@@ -106,30 +105,43 @@
             				'to_date' : $('#to-date').val()
             			},
             			success : function(response){
+            			if(response.status == 200){
             				var x;
             				$.each(response.data,function(key,value){
             					x = x + '<tr>'+
                     						'<td>'+ parseInt(key + 1) +'</td>'+
                     						'<td>'+ value.bill_no + '</td>'+
                     						'<td>'+ value.vendor_name +'</td>'+
-                    						'<td>'+ value.product_total_amount +'</td>'+
-                    						'<td>'+ value.gst_amount +'</td>'+
-                    						'<td>'+ value.grandtotal_amount + '</td>'+
+                    						'<td>'+ indrupee_format(value.product_total_amount) +'</td>'+
+                    						'<td>'+ indrupee_format(value.gst_amount) +'</td>'+
+                    						'<td>'+ indrupee_format(value.grandtotal_amount) + '</td>'+
                     						'<td>'+ value.bill_date + '</td>'+
-                    						'<td>'+
-                    							'<input type="button" value="Edit" />'+	
-                    							'<input type="button" data-billid="'+ value.bill_no +'" class="view" value="View" />'+
-                    							'<input type="button" value="PDF" />'+
+                    						'<td>'+	
+                    							'<a href="'+ baseUrl+'purchase/bill_entry_update/'+value.bill_no +'" class="btn btn-secondary btn-sm">Edit</a>'+
+                    							'<input type="button" data-billid="'+ value.bill_no +'" class="view btn btn-primary btn-sm" value="View"/>'+
+                    							'<a target="_blank" href="'+ baseUrl+'purchase/purchase_pdf/'+value.bill_no +'" class="btn btn-info btn-sm">PDF</a>'+
                     						'</td>'+
                     					'</tr>';
             				});
             				$('#purchaseTableData').html(x);
+            				
+            				$('#purchaseTable').DataTable({
+            					destroy: false,
+                                buttons: [
+                                    'copy', 'csv', 'excel', 'pdf', 'print'
+                                ]
+                            });
+            			} else {
+            				$('#purchaseTableData').html('');
+            			}
+            				
                                     			
             			}
         			});
         	}
         	
         	$(document).on('click','#search',function(){
+        		$("#purchaseTable").dataTable().fnDestroy();
         		loadData();
         	});
         	
@@ -146,7 +158,7 @@
         				console.log(response)
         				$('#modalTitle').html('<p style="line-height:7px;"><span class="text-primary">Bill No. </span>: '+ response.data.billdetail[0].bill_no +'</p>'+
         									  '<p style="line-height:10px;"><span class="text-primary">Bill Date </span>: '+ response.data.billdetail[0].bill_date +'</p>'+
-        									  '<p style="line-height:7px;"><span class="text-primary">Vandor Name </span>:'+ response.data.billdetail[0].vendor_name +'</p>');
+        									  '<p style="line-height:7px;"><span class="text-primary">Vendor Name </span>:'+ response.data.billdetail[0].vendor_name +'</p>');
         				var x = '<table class="table table-bordered"><tr>'+
         								'<th>Sno.</th>'+
         								'<th>Product Name</th>'+
@@ -163,25 +175,25 @@
         								'<td>'+ value.productcode +'</td>'+
         								'<td>'+ value.qty +'</td>'+
         								'<td>'+ value.unitname +'</td>'+
-        								'<td>'+ value.perunit_price +'</td>'+
-        								'<td>'+ value.product_total_amount +'</td>'+
+        								'<td>'+ indrupee_format(value.perunit_price) +'</td>'+
+        								'<td>'+ indrupee_format(value.product_total_amount) +'</td>'+
         							'</tr>';
         				});
         				x = x + '<tr class="bg-dark text-light">'+
         							'<td colspan="6" class="text-center">Total</td>'+
-        							'<td colspan="6">'+ response.data.billdetail[0].product_total_amount +'</td>'+
+        							'<td colspan="6">'+ indrupee_format(response.data.billdetail[0].product_total_amount) +'</td>'+
         						'</tr>'+
 								'<tr>'+
         							'<td colspan="6" class="text-center">Discount Amount</td>'+
-        							'<td colspan="6">'+ response.data.billdetail[0].discount +'</td>'+
+        							'<td colspan="6">'+ indrupee_format(response.data.billdetail[0].discount) +'</td>'+
         						'</tr>'+
         						'<tr>'+
         							'<td colspan="6" class="text-center">GST Amount</td>'+
-        							'<td colspan="6">'+ response.data.billdetail[0].gst_amount +'</td>'+
+        							'<td colspan="6">'+ indrupee_format(response.data.billdetail[0].gst_amount) +'</td>'+
         						'</tr>'+
         						'<tr class="bg-dark text-danger">'+
         							'<td colspan="6" class="text-center">Payable Amount</td>'+
-        							'<td colspan="6"><b>'+ response.data.billdetail[0].grandtotal_amount +'</b></td>'+
+        							'<td colspan="6"><b>'+ indrupee_format(response.data.billdetail[0].grandtotal_amount) +'</b></td>'+
         						'</tr>';
         				x = x + '</table>';
         				$('#modalBody').html(x);
@@ -192,12 +204,12 @@
         		$('#myModal').modal('show');
         	});
         	
-        	$('#purchaseTable').DataTable({
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ]
+        	$("#to-date,#from-date").datepicker({
+//                 showOn: 'button',
+//                 buttonImageOnly: false,
+//                 buttonImage: 'images/calendar.gif',
+                dateFormat: 'dd/mm/yy'
             });
-        	
         });
     </script>
     

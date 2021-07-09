@@ -55,10 +55,10 @@ class Customer extends CI_Controller {
 		    $result = $this->Customer_model->create($data);
 		    if($result){
 		        $this->session->set_flashdata('msg', 'Customer created successfully.');
-		        redirect('master/user');
+		        redirect('master/customer');
 		    } else {
 		        $this->session->set_flashdata('msg', 'Customer not created successfully.');
-		        redirect('master/user');
+		        redirect('master/customer');
 		    }
 		    
 			

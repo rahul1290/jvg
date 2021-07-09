@@ -1,8 +1,6 @@
-
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?php echo base_url();?>">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -13,11 +11,11 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="index.html">
-                    <i class="fa-solid fa-truck-moving"></i>
-                    <span>Dashboard</span></a>
-            </li>
+<!--             <li class="nav-item"> -->
+<!--                 <a class="nav-link" href="index.html"> -->
+<!--                     <i class="fa-solid fa-truck-moving"></i> -->
+<!--                     <span>Dashboard</span></a> -->
+<!--             </li> -->
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -70,12 +68,24 @@
                     </div>
                 </div>
             </li>
-
-            <!-- Nav Item - Tables -->
+            
             <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Sales</span></a>
+                <a class="nav-link <?php echo $this->uri->segment(1) == 'sales'? '':'collapsed'; ?>" href="#" data-toggle="collapse" data-target="#collapsefour"
+                    aria-expanded="true" aria-controls="collapsefour">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Sales</span>
+                </a>
+                <div id="collapsefour" class="collapse <?php echo $this->uri->segment(1) == 'sales'? 'show':''; ?>" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-primary py-2 collapse-inner rounded">
+                        <a class="collapse-item <?php
+                        echo ($this->uri->segment(1) == 'sales' && ($this->uri->segment(2) == 'new-order')) ? 'active':'';
+                        ?>" href="<?php echo base_url('sales/new-order');?>">New Order</a>
+                        
+                        <a class="collapse-item <?php
+                        echo ($this->uri->segment(1) == 'sales' && ($this->uri->segment(2) == 'sales_list')) ? 'active':'';
+                        ?>" href="<?php echo base_url('sales/sales_list');?>">Order List	</a>
+                    </div>
+                </div>
             </li>
 			
 			<!-- Divider -->
@@ -86,23 +96,14 @@
             </div>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url('purchase');?>">
+            <li class="nav-item <?php if($this->uri->segment(1) == 'Dashboard' || $this->uri->segment(1) == 'stock'){
+                echo "active";
+            }?>">
+                <a class="nav-link" href="<?php echo base_url('stock');?>">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Stock List</span></a>
             </li>
 
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Sales</span></a>
-            </li>
-			
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-
+            
         </ul>
         <!-- End of Sidebar -->

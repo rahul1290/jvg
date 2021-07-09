@@ -99,41 +99,28 @@
 													<select id="unit" name="unit" class="mt-2 mr-2">
 														<option value="">Select unit</option>
 													</select>
-													<div class="mt-2">
-														<label>ppu</label>
-                                            			<input type="number" id="ppu" placeholder="Prie Per Unit"/>
-													</div>
+													
 												</div>
                                             	<div class="mt-2">
 													<table class="text-light">
 														<tr>
-															<td><label>Total</label></td>
-															<td>:<input type="text" id="total" value="0"></td>
-														</tr>
-														<tr>
-															<td><label>GST</label></td>
-															<td>:<input type="text" id="item_gst" value="0"></td>
-														</tr>
-														<tr>
-															<td><label>Discount</label></td>
+															<td>Price per unit</td>
 															<td>
-																<div class="input-group">
-																	:<input type="text" id="item_discount" name="item_discount" placeholder="discount"  value="0">
-																	<div class="input-group-append">
-																		<span class="input-group-text" id="basic-addon2">%</span>
-																	</div>
-																</div>
+																<input type="number" id="ppu" placeholder="Prie Per Unit"/>
 															</td>
 														</tr>
 														<tr>
-															<td><label>Grand total</label></td>
-															<td>:<input type="text" id="item_grand_total" value="0"></td>
+															<td>Total</td>
+															<td>
+																<input type="text" id="total" readonly placeholder="total" value="0"/>
+															</td>
 														</tr>
-														<tr>
+														<tr class="pt-4">
 															<td></td>
 															<td><input type="button" value="Add Item" id="add_item" class="btn btn-info"></td>
 														</tr>
 													</table>
+													
 												</div>
                                             </div>
                                         </div>
@@ -141,7 +128,20 @@
                                         </br>
                                         <div class="form-group row">
                                             <div class="offset-2 col-sm-9">	
-                                            	<div id="bill_items"></div>
+                                            	<div class="table-responsive">
+                                            		<div id="bill_items" style="display: none;"></div>
+                                            	</div>
+                                            	<table id="total_cal" style="display: none;">
+                                            		<tr>
+                                            			<td>GST Amount</td>
+                                            			<td><input type="text" value="0" id="gst_amount"/></td>
+                                            		</tr>
+                                            		<tr>
+                                            			<td>Discount</td>
+                                            			<td><input type="text" value="0" id="discount_per"/></td>
+                                            		</tr>
+                                            	</table>
+                                            	
                                             	</br>
                                             	<input type="button" id="create" class="btn btn-success" value="Purchase"/>
                                             	<input type="submit" id="update" style="display: none;" class="btn btn-warning" value="Update"/>
@@ -290,17 +290,14 @@
 				temp['unitText'] = $('#unit option:selected').text();
 				temp['ppu'] = $('#ppu').val();
 				temp['qty'] = $('#quantity').val();
-				temp['total'] = $('#total').val();
-				temp['gst'] = $('#item_gst').val();
-				temp['discount'] = $('#item_discount').val();
-				temp['total_with_gst'] = $('#item_grand_total').val();
+				temp['total'] = parseFloat($('#total').val());
 				
 				if(i) {    
 					items.push(temp);
 				}
 				
 				$('#item,#unit,#ppu,#quantity').val('');
-				var x = '<table class="table-bordered table-striped text-center table-sm">'+
+				var x = '<table class="table table-bordered table-striped text-center table-sm">'+
 							'<thead><tr>'+
 							'<th>sno.</th>'+
 							'<th>Item</th>'+
@@ -308,16 +305,11 @@
 							'<th>Unit</th>'+
 							'<th>PPU</th>'+
 							'<th>Total</th>'+
-							'<th>GST</th>'+
-							'<th>Discount(%)</th>'+
-							'<th>With GST</th>'+
 							'<th></th>'+	
 						'</tr></thead><tbody>';
-				var totalBill = 0;
-				var totalBillGst = 0;		
+				var totalBill = 0;	
 				$.each(items,function(key,value){
-					totalBill = totalBill + parseInt(value.total);
-					totalBillGst = totalBillGst + parseInt(value.total_with_gst);
+					totalBill = totalBill + parseFloat(value.total);
 					x = x + '<tr>'+
 								'<td>'+ parseInt(key+1) +'</td>'+
 								'<td>'+ value.itemText +'</td>'+
@@ -325,21 +317,44 @@
 								'<td>'+ value.unitText +'</td>'+
 								'<td>'+ value.ppu +'</td>'+
 								'<td>'+ value.total +'</td>'+
-								'<td>'+ value.gst +'</td>'+
-								'<td>'+ value.discount +'</td>'+
-								'<td>'+ value.total_with_gst +'</td>'+
 								'<td><input type="button" value="del" data-index="'+ key +'" class="btn btn-danger item-del"/></td>'+
 							'</tr>';
 				});
-				x = x + '<tr class="bg-dark text-light">'+
+				var gstAmount = parseFloat($('#gst_amount').val());
+				if(isNaN(gstAmount) || gstAmount == ''){
+					gstAmount = 0;
+				}
+				var discount = ((totalBill * parseFloat($('#discount_per').val()))/100).toFixed(2);
+				if(isNaN(discount) || discount == ''){
+					discount = 0;
+				}
+				var payableAmount = ((parseFloat(totalBill) + parseFloat(gstAmount)) - parseFloat(discount));
+				
+				x = x + '<tr class="bg-secondary text-light">'+
 							'<td colspan="5">GrandTotal</td>'+
-							'<td>'+ totalBill +'</td>'+
-							'<td></td>'+
-							'<td></td>'+
-							'<td colspan="2">'+ totalBillGst +'</td>'+
+							'<td colspan="2" class="text-left">'+ parseFloat(otalBill) +'</td>'+
+						'</tr>'+
+						'<tr class="bg-secondary text-light">'+
+							'<td colspan="5">GST Amount</td>'+
+							'<td colspan="2" class="text-left">'+ gstAmount +'</td>'+
+						'</tr>'+
+						'<tr class="bg-secondary text-light">'+
+							'<td colspan="5">Discount</td>'+
+							'<td colspan="2" class="text-left">'+ discount +'</td>'+
+						'</tr>'+
+						'<tr class="bg-secondary text-light">'+
+							'<td colspan="5">Payable Amount</td>'+
+							'<td colspan="2" class="text-left">'+ payableAmount +'</td>'+
 						'</tr>';  
 				x = x + '</tbody></table>';
-				$('#bill_items').html(x).show();
+				
+				if(items.length){
+					$('#bill_items').html(x).show();	
+					$('#total_cal').show();
+				} else {
+					$('#bill_items').hide();
+					$('#total_cal').hide();
+				}
 
 				$('#total').val(0);
 				$('#item_gst').val(0);
@@ -347,7 +362,7 @@
 				$('#item_grand_total').val(0);
 			}
             
-            
+            	
             $(document).on('click','.item-del',function(){
             	let index = $(this).data('index');
             	items.splice(index,1);
@@ -474,6 +489,8 @@
 						url : baseUrl + 'Purchase/bill_entry',
 						data : {
 							'items': items,
+							'get_amount' : $('#gst_amount').val(),
+							'discount_per' : $('#discount_per').val(),
 							'bill_no' : $('#billno').val(),
 							'other_vendor' : $('#other_vendor').val(),
 							'billdate' : $('#billdate').val(),
@@ -549,17 +566,28 @@
             	let qty = $(this).val();
             	let ppu = $('#ppu').val();
             	let gstamount = $('#item_gst').val();
-            	let total = qty*ppu;
+            	let total = (qty*ppu).toFixed(2);
 				let discount = $('#item_discount').val();
 
             	let itemdiscount = (total*discount)/100;
             	$('#total').val(total);
-            	$('#item_grand_total').val(parseInt(total) + parseInt(gstamount) - parseInt(itemdiscount));
+            	$('#item_grand_total').val(parseInt(total) + parseFloat(gstamount) - parseFloat(itemdiscount)).toFixed(2);
             });
+            
+            
+            $(document).on('keyup','#gst_amount,#discount_per',function(e){
+            	billPreview(0);
+            });
+            
+            $("#gst_amount").keypress(function (e) {
+                 if (e.which != 8 && e.which != 0 && (e.which < 46 || e.which > 57)) {
+                 	$("#errmsg").html("Digits Only").show().fadeOut("slow");
+                    	return false;
+                }
+           	});
+            
+            
 
-			$(document).on('keyup','#item_gst,#item_discount',function(){
-				$( "#quantity" ).trigger( "keyup" );
-			});
             
             
             $('#vendorTable').DataTable({

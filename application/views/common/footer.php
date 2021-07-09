@@ -35,7 +35,27 @@
             </div>
         </div>
     </div>
-
+<script>
+	function indrupee_format(amount){
+		var x=amount;
+		y = x.toString();
+		const v= y.split('.');
+		
+		
+		x = Math.trunc(v[0]);
+		
+        x = x.toString();
+        var lastThree = x.substring(x.length-3);
+        var otherNumbers = x.substring(0,x.length-3);
+        if(otherNumbers != '')
+            lastThree = ',' + lastThree;
+            if(v.length > 1)
+        		var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree +'.'+ v[1];
+        	else
+        		var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+        return res;
+	}
+</script>
 <script src="<?php echo base_url('assest/');?>vendor/jquery/jquery.min.js"></script>
 <script src="<?php echo base_url('assest/');?>vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -52,3 +72,5 @@
 <script src="<?php echo base_url('assest/');?>js/buttons.html5.min.js"></script>
 <script src="<?php echo base_url('assest/');?>js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
