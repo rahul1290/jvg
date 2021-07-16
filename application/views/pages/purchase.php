@@ -332,7 +332,7 @@
 				
 				x = x + '<tr class="bg-secondary text-light">'+
 							'<td colspan="5">GrandTotal</td>'+
-							'<td colspan="2" class="text-left">'+ parseFloat(otalBill) +'</td>'+
+							'<td colspan="2" class="text-left">'+ parseFloat(totalBill) +'</td>'+
 						'</tr>'+
 						'<tr class="bg-secondary text-light">'+
 							'<td colspan="5">GST Amount</td>'+

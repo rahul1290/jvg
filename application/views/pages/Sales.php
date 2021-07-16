@@ -747,7 +747,7 @@
 						success: function(response){
 							if(response.status == 200){
 								$('#quantity').attr({
-									"max" : 20
+									"max" : response.data[0].qty
 								})
 							}
 						}
