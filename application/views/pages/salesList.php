@@ -1,4 +1,4 @@
-<body id="page-top">
+	<body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
@@ -39,6 +39,7 @@
                                         		<th>SNo.</th>
                                         		<th>Invoice No</th>
                                         		<th>Customer Name</th>
+                                        		<th>Broker Name</th>
                                         		<th>Pre Tax Amount</th>
                                         		<th>Tax Amount</th>
                                         		<th>Total Amount</th>
@@ -114,6 +115,7 @@
                     						'<td>'+ parseInt(key + 1) +'</td>'+
                     						'<td>'+ value.invoice_no + '</td>'+
                     						'<td>'+ value.customer_name +'</td>'+
+                    						'<td>'+ value.broker_name +'</td>'+
                     						'<td>'+ value.grand_total +'</td>'+
                     						'<td>'+ value.total_tax_amount +'</td>'+
                     						'<td>'+ (parseFloat(value.grand_total) + parseFloat(value.total_tax_amount))  + '</td>'+
@@ -268,14 +270,6 @@
                 									'<tr>'+
                 										'<td colspan="6" class="text-right">Add : SGST @ 9.00 %</td>'+
                 										'<td>'+ response.data.sale_detail[0].sgst_amount +'</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td colspan="6" class="text-right">Add : TCS @ 0.01 %</td>'+
-                										'<td>0</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td colspan="6" class="text-right">Round off :</td>'+
-                										'<td>0</td>'+
                 									'</tr>'+
                 									'<tr>'+
                 										'<td colspan="6" class="text-right">Grand Total :</td>'+

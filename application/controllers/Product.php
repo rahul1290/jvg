@@ -35,7 +35,6 @@ class Product extends CI_Controller {
 		$this->form_validation->set_rules('name', 'Product Name', 'required|trim');
 		$this->form_validation->set_rules('code', 'Product code', 'required|trim');
 		$this->form_validation->set_rules('unit', 'Product unit', 'required|trim');
-		$this->form_validation->set_rules('ppu', 'price per unit', 'required|trim');
 		$this->form_validation->set_error_delimiters('<span class="custom_error text-danger text-center">', '</span>');
 		if ($this->form_validation->run() == FALSE){
 		    $this->session->set_flashdata('msg', 'Something wrong.');
@@ -45,7 +44,7 @@ class Product extends CI_Controller {
 		    $data['name'] = $this->input->post('name');
 		    $data['code'] = $this->input->post('code');
 		    $data['unit_id'] = $this->input->post('unit');
-		    $data['ppu'] = $this->input->post('ppu');
+		    $data['ppu'] = '0.0';
 		    $data['created_by'] = $this->session->userdata('userId');
 		    $data['created_at'] = date('Y-m-d H:i:s');
 		    $result = $this->Product_model->create($data);

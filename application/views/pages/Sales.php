@@ -30,6 +30,11 @@
                                     			<div class="">
                                         			<div class="form-row">
                                                         <div class="form-group col-md-4">
+                                                        	<label class="col-sm-3 col-form-label col-form-label-sm">Bill No.<span class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" id="billno" name="billno" placeholder="bill no" value="<?php echo $billno;?>">
+                                                  			<div id="billno_error" class="text-danger" style="display: none;"></div>
+                                                        </div>
+                                                        <div class="form-group col-md-4">
                                                         	<label class="col-sm-4 col-form-label col-form-label-sm">Customer<span class="text-danger">*</span></label>
                                                             <select id="customer_id" class="form-control">
                                                         		<option value="">Select Customer</option>
@@ -43,13 +48,7 @@
                                                         </div>
                                                         
                                                         <div class="form-group col-md-4">
-                                                        	<label class="col-sm-3 col-form-label col-form-label-sm">Bill No.<span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" id="billno" name="billno" placeholder="bill no" value="<?php echo $billno;?>">
-                                                  			<div id="billno_error" class="text-danger" style="display: none;"></div>
-                                                        </div>
-                                                        
-                                                        <div class="form-group col-md-4">
-                                                        	<label class="col-sm-4 col-form-label col-form-label-sm">Bill Date<span class="text-danger">*</span></label>
+                                                        	<label class="col-sm-4 col-form-label col-form-label-sm">Sale Date<span class="text-danger">*</span></label>
                                                     		<input type="text" class="form-control" id="billdate" name="billdate" placeholder="Date" value="<?php echo date('d/m/Y');?>">
                                                   			<div id="billdate_error" class="text-danger" style="display: none;"></div>
                                                         </div>
@@ -94,7 +93,7 @@
                                                     
                                                     <div class="form-row">
                                                     	<div class="from-group col-md-4">
-                                                    		<label for="colFormLabelSm" class="col-sm-5 col-form-label col-form-label-sm">Shipping state<span class="text-danger">*</span></label>
+                                                    		<label for="colFormLabelSm" class="col-sm-5 col-form-label col-form-label-sm">Shipping State<span class="text-danger">*</span></label>
                                                     		<select class="form-control" id="shipping_state" name="shipping_state">
                                                         		<option value="">Select State</option>
                                                         		<?php foreach($states as $state){ ?>
@@ -115,6 +114,19 @@
                                                         <div class="col-sm-12">
                                                         	<textarea class="form-control form-control-sm" rows="5" id="shipping_address" name="shipping_address"><?php echo set_value('address'); ?></textarea>
                                                         	<div id="address_error" class="text-danger" style="display: none;"></div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="form-group row">
+                                                        <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Broker<span class="text-danger">*</span></label>
+                                                        <div class="col-sm-12">
+                                                        	<select id="broker_id" class="form-control">
+                                                        		<option value="">Select Broker</option>
+                                                        		<?php foreach($broker_list as $broker) { ?>
+                                                        			<option value="<?php echo $broker['id'];?>"><?php echo $broker['broker_name'];?></option>
+                                                        		<?php } ?>
+                                                        	</select>
+                                                        	<div id="broker_id_error" class="text-danger" style="display: none;"></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -183,9 +195,17 @@
                                         	<div class="mt-2">
 												<table class="text-dark">
 													<tr>
-														<td>Price per unit</td>
+														<td>Purchase From</td>
 														<td>
-															<input type="number" id="ppu" placeholder="Prie Per Unit"/>
+															<select id="purchase_from" class="form-control">
+																<option value="">Select Vendor</option>
+															</select>
+														</td>
+													</tr>
+													<tr>
+														<td>Rate Per Metric Ton</td>
+														<td>
+															<input type="number" id="ppu" min="0" class="form-control" placeholder="Prie Per Unit"/>
 														</td>
 													</tr>
 													<tr>
@@ -253,27 +273,6 @@
                                         </div>
                                     </div>
                               </div>
-                            </div>
-                            
-                            
-                            
-                            <div class="form-group row mt-3" id="payment_tab" style="display: none;">
-                            	<label for="staticEmail" class="col-sm-2 col-form-label">Payment Mode</label>
-                                <div class="col-sm-10">
-                                  <select id="pay_mode" name="pay_mode">
-                                  	<option value="">Select payment mode</option>
-                                  	<option value="cash">Cash</option>
-                                  	<option value="ledger">ledger</option>
-                                  </select>
-                                </div>
-								<label for="staticEmail" class="col-sm-2 col-form-label">Previous Due</label>
-                                <div class="col-sm-10">
-                                  <input type="text" id="due_amount" value="0" />
-                                </div>
-                                <label for="staticEmail" class="col-sm-2 col-form-label">Recived Amount</label>
-                                <div class="col-sm-10">
-                                  <input type="text" id="rec_amount" />
-                                </div>
                             </div>
                             
                             <div class="text-center">
@@ -377,6 +376,7 @@
         	
 
         	$(document).on('click','#add_item',function(){
+        	console.log('379');
         		var formvalid = true;
         		if($('#item').val() == ''){
         			$('#item').addClass('haveerror');
@@ -385,12 +385,19 @@
         			$('#item').removeClass('haveerror');
         		}
         		
-        		if($('#unit').val() == ''){
-        			$('#unit').addClass('haveerror');
+        		if($('#purchase_from').val() == ''){
+        			$('#purchase_from').addClass('haveerror');
         			formvalid = false;
         		} else {
-        			$('#unit').removeClass('haveerror');
+        			$('#purchase_from').removeClass('haveerror');
         		}
+        		
+//         		if($('#unit').val() == ''){
+//         			$('#unit').addClass('haveerror');
+//         			formvalid = false;
+//         		} else {
+//         			$('#unit').removeClass('haveerror');
+//         		}
         		
         		if($('#ppu').val() == ''){
         			$('#ppu').addClass('haveerror');
@@ -411,12 +418,15 @@
             });
 
 			function billPreview(i){
+			console.log('420');
 				temp = {};
 				temp['item'] = $('#item').val();
 				temp['itemText'] = $('#item option:selected').text();
 				temp['unit'] = $('#unit').val();
 				temp['unitText'] = $('#unit option:selected').text();
 				temp['ppu'] = $('#ppu').val();
+				temp['vendor_id'] = $('#purchase_from').val();
+				temp['vendor_text'] = $('#purchase_from option:selected').text();
 				temp['qty'] = $('#quantity').val();
 				temp['total'] = $('#total').val();
 				
@@ -427,7 +437,8 @@
 				$('#item,#unit,#ppu,#quantity').val('');
 				var x = '<table class="table table-bordered table-striped text-center table-sm">'+
 							'<thead><tr>'+
-							'<th>sno.</th>'+
+							'<th>Sno.</th>'+
+							'<th>Vendor Name</th>'+
 							'<th>Item</th>'+
 							'<th>Quantity</th>'+
 							'<th>Unit</th>'+
@@ -440,6 +451,7 @@
 					totalBill = totalBill + parseFloat(value.total);
 					x = x + '<tr>'+
 								'<td>'+ parseFloat(key+1) +'</td>'+
+								'<td>'+ $('#purchase_from option:selected').text() +'</td>'+
 								'<td>'+ value.itemText +'</td>'+
 								'<td>'+ value.qty +'</td>'+
 								'<td>'+ value.unitText +'</td>'+
@@ -451,32 +463,32 @@
 				var cgstAmount = ((totalBill *$('#cgst_amount').val())/100).toFixed(2);
 				var sgstAmount = ((totalBill *$('#sgst_amount').val())/100).toFixed(2);
 				var igstAmount = ((totalBill *$('#igst_amount').val())/100).toFixed(2);
-				var discount = ((totalBill * $('#discount_per').val())/100).toFixed(2);
+				//var discount = ((totalBill * $('#discount_per').val())/100).toFixed(2);
 				
-				var payableAmount = ((parseFloat(totalBill) + parseFloat(cgstAmount) + parseFloat(sgstAmount) + parseFloat(igstAmount)) - parseFloat(discount));
+				var payableAmount = ((parseFloat(totalBill) + parseFloat(cgstAmount) + parseFloat(sgstAmount) + parseFloat(igstAmount)));
 				
 				x = x + '<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">Amount</td>'+
+							'<td colspan="6" class="text-right">Amount</td>'+
 							'<td colspan="2" class="text-left">'+ totalBill +'</td>'+
 						'</tr>'+
 						'<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">CGST Amount</td>'+
+							'<td colspan="6" class="text-right">CGST Amount</td>'+
 							'<td colspan="2" class="text-left">'+ cgstAmount +'</td>'+
 						'</tr>'+
 						'<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">SGST Amount</td>'+
+							'<td colspan="6" class="text-right">SGST Amount</td>'+
 							'<td colspan="2" class="text-left">'+ sgstAmount +'</td>'+
 						'</tr>'+
 						'<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">IGST Amount</td>'+
+							'<td colspan="6" class="text-right">IGST Amount</td>'+
 							'<td colspan="2" class="text-left">'+ igstAmount +'</td>'+
 						'</tr>'+
+// 						'<tr class="bg-secondary text-light">'+
+// 							'<td colspan="6" class="text-right">Discount</td>'+
+// 							'<td colspan="2" class="text-left">'+ discount +'</td>'+
+// 						'</tr>'+
 						'<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">Discount</td>'+
-							'<td colspan="2" class="text-left">'+ discount +'</td>'+
-						'</tr>'+
-						'<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">GrandTotal</td>'+
+							'<td colspan="6" class="text-right">GrandTotal</td>'+
 							'<td colspan="2" class="text-left">'+ payableAmount +'</td>'+
 						'</tr>';  
 				x = x + '</tbody></table>';
@@ -495,10 +507,12 @@
 				$('#item_gst').val(0);
 				$('#item_discount').val(0);
 				$('#item_grand_total').val(0);
+				$('#purchase_from').val('');
 			}
             
             	
             $(document).on('click','.item-del',function(){
+            console.log('508');
             	let index = $(this).data('index');
             	items.splice(index,1);
             	billPreview(0);
@@ -506,6 +520,7 @@
 
 
         	$(document).on('change','#customer_id',function(){
+        	console.log('515');
         		$('#shipping_checkbox').prop('checked', false);
         		$('#shipping_address').val('');
             	var customerId = $(this).val();
@@ -550,6 +565,7 @@
             });
             
             $(document).on('click','#create',function(){
+            console.log('559');
             	var formvalid = true;
             	if(items.length < 1){
             		alert('Please select atlease one item to sale.');
@@ -719,7 +735,8 @@
 							'other_customer' : $('#other_customer').val(),
 							'shipping_destination' : $('#shipping_destination').val(),
 							'shipping_address' : $('#shipping_address').val(),
-							'shipping_state' : $('#shipping_state').val()
+							'shipping_state' : $('#shipping_state').val(),
+							'broker_id' : $('#broker_id').val()
 						},
 						dataType : 'json',
 						success: function(response){
@@ -736,23 +753,14 @@
             
             
             $(document).on('change','#item',function(){
-            		productId = $(this).val();
+            	console.log('745');
+            	productId = $(this).val();
+            	$('#quantity').val('');
+            	$('#unit').val('');
+            	$('#purchase_from').val('');
+            	$('#ppu').val(0);
+            	$('#total').val(0);
             		
-            	$.ajax({
-						type: 'GET',
-						url : baseUrl + 'stock/stock_detail/'+productId,
-						data : {},
-						async: false,
-						dataType : 'json',
-						success: function(response){
-							if(response.status == 200){
-								$('#quantity').attr({
-									"max" : response.data[0].qty
-								})
-							}
-						}
-				});
-					
             	$.ajax({
 						type: 'POST',
 						url : baseUrl + 'product/getproductUnit',
@@ -774,13 +782,14 @@
 				});	
             });
 
-			$(document).on('keyup','#ppu',function(){	
-				$('#quantity').trigger('keyup');
-			});
 			
 			$(document).on('change','#unit',function(){
 				var productId = $('#item').val();
-				var unitId = $('#unit').val();
+				$('#purchase_from').val('');
+				$('#ppu').val(0);
+				$('#total').val(0);
+				
+				var unitId = $(this).val();
 				var quantity = $('#quantity').val();				
 				$.ajax({
 						type: 'POST',
@@ -807,23 +816,6 @@
 				}
 			});
             
-            $(document).on('keyup','#quantity',function(){
-            	var max = $(this).attr('max');
-            	let qty = $(this).val();
-            	let ppu = $('#ppu').val();
-            	let gstamount = $('#item_gst').val();
-            	let total = (qty*ppu).toFixed(2);
-				let discount = $('#item_discount').val();
-
-            	let itemdiscount = (total*discount)/100;
-            	
-            	if(parseFloat(qty) > parseFloat(max)){
-            		alert('Only '+ max + ' unit available');
-            	} else{
-                	$('#total').val(total);
-                	$('#item_grand_total').val(parseFloat(total) + parseFloat(gstamount) - parseFloat(itemdiscount));
-            	}
-            });
             
             
             $(document).on('keyup','#cgst_amount,#sgst_amount,#igst_amount,#discount_per',function(){
@@ -836,6 +828,55 @@
 //                 buttonImageOnly: false,
 //                 buttonImage: 'images/calendar.gif',
                 dateFormat: 'dd/mm/yy'
+            });
+            
+            $(document).on('change','#purchase_from',function(){
+            	$('#ppu').val(0);
+            	$('#total').val(0);
+            });
+            
+            
+            $(document).on('keyup','#ppu',function(){
+            	$('#total').val($('#quantity').val() * $(this).val());
+            });
+            
+            $(document).on('keyup','#quantity',function(){
+            	$('#purchase_from').val('');
+            	$('#unit').val('');
+            	$('#purchase_from').val('');
+            	$('#ppu').val(0);
+            	$('#total').val(0);
+            	
+            	var itemId = $('#item').val();
+            	var quantity = $(this).val();
+            	if($('#item').val() == ''){
+            		alert('Please select item first');
+            		return false;
+            	} 
+            	
+            	
+            	$.ajax({
+						type: 'POST',
+						url : baseUrl + 'stock/getvendorlist',
+						data : {
+							'item_id' : itemId,
+							'quantity' : quantity
+						},
+						dataType : 'json',
+						success: function(response){
+							var x = '<option value="">Select Vendor</option>';
+							if(response.status == 200){
+								$.each(response.data,function(key,value){
+									x = x + '<option value="'+ value.vendor_id +'">'+ value.vendor_name +'</option>';
+								});
+							
+							$('#purchase_from').html(x);
+							}
+							else {
+								$('#purchase_from').html(x);
+							}
+						}
+				});
             });
 
         });

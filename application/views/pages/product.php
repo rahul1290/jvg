@@ -54,13 +54,6 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">PPU<span class="text-danger">*</span></label>
-                                            <div class="col-sm-9">
-                                            	<input type="number" class="form-control form-control-sm" id="ppu" name="ppu" placeholder="Price Per Unit" value="<?php echo set_value('gst_no');?>">
-                                            	<?php echo form_error('ppu'); ?>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
                                             <div class="offset-3 col-sm-9">
                                             	<input type="submit" id="create" class="btn btn-success" value="Create"/>
                                             	<input type="submit" id="update" style="display: none;" class="btn btn-warning" value="Update"/>
@@ -87,7 +80,6 @@
                                                     <th>Name</th>
                                                     <th>Code</th>
                                                     <th>Unit</th>
-                                                    <th>PPU</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -100,7 +92,6 @@
                                                         <td><?php echo $product['name']; ?></td>
                                                         <td><?php echo $product['code']; ?></td>
                                                         <td><?php echo $product['unitname']; ?></td>
-                                                        <td><?php echo $product['ppu']; ?></td>
                                                         <td>
                                                         	<a href="javascript:void(0);" class="edit" data-pid="<?php echo $product['product_id'];?>"><i class="fas fa-pencil-alt"></i></a>
                                                         	<a href="javascript:void(0);" class="delete" data-pid="<?php echo $product['product_id'];?>"><i class="fas fa-trash-alt"></i></a>

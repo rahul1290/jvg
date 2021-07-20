@@ -48,7 +48,7 @@
 						</tr>
 						<tr>
 							<td width="50%">
-								<table width="100%" style="text-align: center;border-collapse: collapse;">
+								<table width="100%" style="border-collapse: collapse;">
 									<tr>
 										<td>Invoice No.</td>
 										<td>: <?php echo $sales_data[0]['invoice_no']; ?></td>
@@ -134,14 +134,6 @@
 									<tr>
 										<td colspan="6" style="text-align: right;">Add : SGST @ 9.00 %</td>
 										<td><?php echo $sales_data[0]['sgst_amount'];?></td>
-									</tr>
-									<tr>
-										<td colspan="6" style="text-align: right;">Add : TCS @ 0.01 %</td>
-										<td>0</td>
-									</tr>
-									<tr>
-										<td colspan="6" style="text-align: right;">Round off :</td>
-										<td>0</td>
 									</tr>
 									<tr>
 										<td colspan="6" style="text-align: right;">Grand Total :</td>

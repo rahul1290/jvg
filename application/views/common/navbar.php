@@ -37,7 +37,8 @@
                         <a class="collapse-item <?php if($this->uri->segment(1) == 'master' && $this->uri->segment(2) == 'vendor'){ echo 'active'; }?>" href="<?php echo base_url('master/vendor'); ?>">Vendor</a>
                         <a class="collapse-item <?php if($this->uri->segment(1) == 'master' && $this->uri->segment(2) == 'user'){ echo 'active'; }?>" href="<?php echo base_url('master/user'); ?>">User</a>
                         <a class="collapse-item <?php if($this->uri->segment(1) == 'master' && $this->uri->segment(2) == 'product'){ echo 'active'; }?>" href="<?php echo base_url('master/product'); ?>">Product</a>
-                        <a class="collapse-item <?php if($this->uri->segment(1) == 'master' && $this->uri->segment(2) == 'customer'){ echo 'active'; }?>" href="<?php echo base_url('master/customer'); ?>">Customer</a>
+                        <?php /*<a class="collapse-item <?php if($this->uri->segment(1) == 'master' && $this->uri->segment(2) == 'customer'){ echo 'active'; }?>" href="<?php echo base_url('master/customer'); ?>">Customer</a> */ ?>
+                        <a class="collapse-item <?php if($this->uri->segment(1) == 'master' && $this->uri->segment(2) == 'broker'){ echo 'active'; }?>" href="<?php echo base_url('master/broker'); ?>">Broker</a>
                     </div>
                 </div>
             </li>
@@ -101,7 +102,14 @@
             }?>">
                 <a class="nav-link" href="<?php echo base_url('stock');?>">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Stock List</span></a>
+                    <span>Product Report</span></a>
+            </li>
+            <li class="nav-item <?php if($this->uri->segment(1) == 'report' && $this->uri->segment(2) == 'vendor'){
+                echo "active";
+            }?>">
+                <a class="nav-link" href="<?php echo base_url('report/vendor');?>">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Vendor Report</span></a>
             </li>
 
             

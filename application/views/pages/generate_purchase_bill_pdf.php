@@ -30,8 +30,8 @@
 									<tr>
 										<td>
     										<div class="ml-1 row">
-    											<div class="col">Bill No. : <?php echo $purchase_data[0]['bill_no']; ?><br>Vendor Name : <?php echo $purchase_data[0]['vendor_name']; ?></div>
-    											<div class="col text-right" style="float-right;"><?php echo date('d/m/Y',strtotime($purchase_data[0]['bill_date'])); ?></div>
+    											<div class="col">Bill No. : <?php echo $purchase_data[0]['purchase_id']; ?><br>Vendor Name : <?php echo $purchase_data[0]['vendor_name']; ?></div>
+    											<div class="col text-right" style="float-right;"><?php echo date('d/m/Y',strtotime($purchase_data[0]['billdate'])); ?></div>
     										</div>
     										<div style="text-align: center;">
                         						<p><u>PURCHASE BILL</u>

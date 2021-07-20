@@ -32,9 +32,9 @@ class Vendor extends CI_Controller {
 	        die;
 	    }
 		$this->form_validation->set_rules('name', 'Vendor Name', 'required|trim');
-		$this->form_validation->set_rules('contact', 'Contact No', 'required|trim|min_length[10]');
-		$this->form_validation->set_rules('alternet_contact', 'Alternet No', 'trim');
-		$this->form_validation->set_rules('gst_no', 'Alternet No', 'required|trim|exact_length[15]');
+		$this->form_validation->set_rules('contact', 'Contact No', 'trim|min_length[10]|exact_length[10]');
+		$this->form_validation->set_rules('alternet_contact', 'Alternet No', 'trim|min_length[10]|exact_length[10]');
+		$this->form_validation->set_rules('gst_no', 'Gst No', 'required|trim|exact_length[15]');
 		$this->form_validation->set_rules('address', 'Address', 'trim');
 		$this->form_validation->set_error_delimiters('<span class="custom_error text-danger text-center">', '</span>');
 		if ($this->form_validation->run() == FALSE){
@@ -87,6 +87,20 @@ class Vendor extends CI_Controller {
 	   } else {
 	       echo json_encode(array('msg'=>'no record found.','status'=>500));
 	   }
+	}
+	
+	function report(){
+	    if($this->session->userdata('userId') == null){
+	        redirect('Auth','refresh');
+	    }
+	    $data['report_data'] = $this->Vendor_model->report();
+	    $data['header'] = $this->load->view('common/header','',true);
+	    $data['navbar'] = $this->load->view('common/navbar','',true);
+	    $data['footer'] = $this->load->view('common/footer','',true);
+	    $data['topbar'] = $this->load->view('common/topbar','',true);
+	    $data['copyright'] = $this->load->view('common/copyright','',true);
+	    $data['body'] = $this->load->view('report/vendor_report',$data,true);
+	    $this->load->view('layout',$data);
 	}
 
 }

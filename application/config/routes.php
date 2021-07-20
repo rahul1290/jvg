@@ -9,9 +9,12 @@ $route['master/product'] = 'Product/index';
 $route['purchase/list'] = 'Purchase/purchase_list';
 $route['master/user'] = 'User/index';
 $route['master/customer'] = 'Customer/index';
+$route['master/broker'] = 'Broker/index';
 
 $route['sales/new-order'] = 'Sales';
 $route['Dashboard'] = 'Stock';
 $route['stock'] = 'Stock';
+$route['report/vendor'] = 'Vendor/report';
+$route['report/broker'] = 'Broker/report';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

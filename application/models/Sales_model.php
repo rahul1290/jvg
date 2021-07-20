@@ -15,8 +15,9 @@ class Sales_model extends CI_Model{
     }
     
     function sales_list($data){
-        $this->db->select('s.*,st.state_name,c.customer_name,DATE_FORMAT(s.invoice_date,"%d/%m/%Y") as invoice_date');
+        $this->db->select('s.*,b.broker_name,st.state_name,c.customer_name,DATE_FORMAT(s.invoice_date,"%d/%m/%Y") as invoice_date');
         $this->db->join('customer c','c.id = s.customer_id');
+        $this->db->join('broker b','b.id = s.broker_id and b.status = 1');
         $this->db->join('state st','st.state_id = s.state_of_supply AND st.status = 1');
         $this->db->where('s.invoice_date >=',$data['from_date']);
         $this->db->where('s.invoice_date <=',$data['to_date']);

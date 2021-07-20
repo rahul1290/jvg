@@ -35,7 +35,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Contact<span class="text-danger">*</span></label>
+                                            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Contact</label>
                                             <div class="col-sm-9">
                                             	<input type="text" class="form-control form-control-sm" id="contact" name="contact" placeholder="Vendor Contact" maxlength="10" value="<?php echo set_value('contact'); ?>">
                                             	<?php echo form_error('contact'); ?>

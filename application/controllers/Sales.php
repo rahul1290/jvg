@@ -9,7 +9,7 @@ class Sales extends CI_Controller {
 		parent::__construct();
 		$this->load->helper(array('form','url'));
 		$this->load->database();
-		$this->load->model(array('Auth_model','Vendor_model','Product_model','Unit_model','Stock_model','Customer_model','State_model','Sales_model'));
+		$this->load->model(array('Auth_model','Vendor_model','Product_model','Unit_model','Stock_model','Customer_model','State_model','Sales_model','Broker_model'));
 		$this->load->library(array('session','form_validation','pdf','mylibrary'));
     }
 
@@ -19,6 +19,7 @@ class Sales extends CI_Controller {
 			redirect('Auth','refresh');
 		} 
 		$data['customer_list'] = $this->Customer_model->list();
+		$data['broker_list'] = $this->Broker_model->list();
 		$data['states'] = $this->State_model->list();
 		$data['products'] = $this->Product_model->list();
 	
@@ -43,16 +44,17 @@ class Sales extends CI_Controller {
 	
 	function bill_entry(){
 	    $customer_id = $this->input->post('customer_id');
+	    $broker_id = $this->input->post('broker_id');
 	    
-	    if($this->input->post('seller_id') == 'oth'){
-	        $data['vendor_name'] = $this->input->post('other_vendor');
+	    if($this->input->post('customer_id') == 'oth'){
+	        $data['customer_name'] = $this->input->post('other_customer');
 	        $data['contact_no'] = $this->input->post('contact_no');
-	        $data['Alternate_contact_no'] = $this->input->post('alternet_contact');
+	        $data['alternet_no'] = $this->input->post('alternet_contact');
 	        $data['gst_no'] = $this->input->post('gst_no');
 	        $data['address'] = $this->input->post('address');
 	        $data['created_by'] = $this->session->userdata('userId');
-	        $data['createdate'] = date('Y-m-d H:i:s');
-	        if($this->Vendor_model->create($data)){
+	        $data['created_at'] = date('Y-m-d H:i:s');
+	        if($this->Customer_model->create($data)){
 	            $customer_id = $this->db->insert_id();
 	        }
 	    }
@@ -70,6 +72,7 @@ class Sales extends CI_Controller {
 	    
 	    $saleData['GR/RRNo'] = $this->input->post('grrr_no');
 	    $saleData['customer_id'] = $customer_id;
+	    $saleData['broker_id'] = $broker_id;
 	    $saleData['trasport'] = $this->input->post('transname');
 	    $saleData['vehicle_no'] = $this->input->post('vechileno');
 	    $saleData['eway_no'] = $this->input->post('ewaybillno');
@@ -87,9 +90,6 @@ class Sales extends CI_Controller {
 	    $saleData['created_at'] = date('Y-m-d H:i:s');
 	    $saleData['created_by'] = $this->session->userdata('userId');
 	    
-	    
-	    $dataPaymentDetail['recieved_amount'] = trim($this->input->post('rec_amount'));
-	    $dataPaymentDetail['payment_mode'] = $this->input->post('pay_mode');   
 	    $dataPaymentDetail['status'] = 1;
 	    $dataPaymentDetail['create_date'] = date('Y-m-d H:i:s');
 	    $dataPaymentDetail['created_by'] = $this->session->userdata('userId');
@@ -102,10 +102,12 @@ class Sales extends CI_Controller {
     	        $temp = array();
     	        $temp['sale_id'] = $result;
     	        $temp['product_id'] = $item['item'];
-    	        $temp['unit_id'] = $item['unit'];
+//     	        $temp['unit_id'] = $item['unit'];
+    	        $temp['unit_id'] = 3;
     	        $temp['qty'] = $item['qty'];
     	        $temp['sales_per_unit'] = $item['ppu'];
     	        $temp['sales_product_amount'] = $item['ppu'] * $item['qty'];
+    	        $temp['vendor_id'] = $item['vendor_id'];
     	        $itemTableData[] = $temp; 
     	        
     	        $this->Stock_model->stock_sale($item);

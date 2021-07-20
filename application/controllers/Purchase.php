@@ -7,16 +7,16 @@ class Purchase extends CI_Controller {
 		parent::__construct();
 		$this->load->helper(array('form','url'));
 		$this->load->database();
-		$this->load->model(array('Auth_model','Vendor_model','Product_model','Unit_model','Purchase_model','Stock_model'));
+		$this->load->model(array('Auth_model','Vendor_model','Product_model','Unit_model','Purchase_model','Stock_model','Broker_model'));
 		$this->load->library(array('session','form_validation','pdf'));
     }
 
 	function index(){
-	    $data['billno'] = 'JVG-'.rand(1,99).'-'.date('U');
 		if($this->session->userdata('userId') == null){
 			redirect('Auth','refresh');
 		} 
 		$data['vendor_list'] = $this->Vendor_model->list();
+		$data['broker_list'] = $this->Broker_model->list();
 		$data['products'] = $this->Product_model->list();
 	
 		$filtredList = array();
@@ -60,19 +60,20 @@ class Purchase extends CI_Controller {
 	    $itemTableData = array();
 	    
 	    foreach($items as $item){
-	        $product_total_amount += ($item['ppu'] * $item['qty']);
+	        $product_total_amount += ($item['total']);
 	    }
-	    
-	    $purchaseData['bill_no'] = $this->input->post('bill_no');
 	    $purchaseData['bill_date'] = date("Y-m-d", strtotime($this->input->post('billdate')));
 	    $purchaseData['vendor_id'] = $seller_id;
+	    $purchaseData['broker_id'] = $this->input->post('broker_id');
 	    $purchaseData['product_total_amount'] = $product_total_amount;
 	    $purchaseData['purchase_date'] = date("Y-m-d", strtotime($this->input->post('billdate')));
-	    $purchaseData['discount'] = ($product_total_amount * $this->input->post('discount_per'))/100;
+	    $purchaseData['discount'] = 0;
 	    $purchaseData['gst_amount'] = $this->input->post('get_amount');
 	    $purchaseData['grandtotal_amount'] = (($product_total_amount + $purchaseData['gst_amount']) - $purchaseData['discount']);
 	    $purchaseData['created_at'] = date('Y-m-d H:i:s');
 	    $purchaseData['created_by'] = $this->session->userdata('userId');
+	    
+	    
 	    
 	    $this->db->trans_begin();
 	    
@@ -84,8 +85,7 @@ class Purchase extends CI_Controller {
     	        $temp['product_id'] = $item['item'];
     	        $temp['unit_id'] = $item['unit'];
     	        $temp['qty'] = $item['qty'];
-    	        $temp['perunit_price'] = $item['ppu'];
-    	        $temp['product_total_amount'] = $item['ppu'] * $item['qty'];
+    	        $temp['product_total_amount'] = $item['total'];
     	        $itemTableData[] = $temp; 
     	        
     	        $this->Stock_model->stock_entry($item);
@@ -124,6 +124,7 @@ class Purchase extends CI_Controller {
 	    $data['bill_detail'] = $this->Purchase_model->purchase_bill_detail($data);
 	    $data['vendor_detail'] = $this->Vendor_model->getdetail($data['bill_detail'][0]['vendor_id']);
 	    $data['bill_items'] = $this->Purchase_model->purchase_billitem_detail($data['bill_detail'][0]['purchase_id']);
+	    $data['broker_list'] = $this->Broker_model->list();
 	    
 	    $data['header'] = $this->load->view('common/header','',true);
 	    $data['navbar'] = $this->load->view('common/navbar','',true);
@@ -137,6 +138,7 @@ class Purchase extends CI_Controller {
 	
 	function bill_update(){
 	    $seller_id = $this->input->post('seller_id');
+	    $bill_id = $this->input->post('bill_id');
 	    
 	    if($this->input->post('seller_id') == 'oth'){
 	        $data['vendor_name'] = $this->input->post('other_vendor');
@@ -156,10 +158,10 @@ class Purchase extends CI_Controller {
 	    $itemTableData = array();
 	    
 	    foreach($items as $item){
-	        $product_total_amount += ($item['ppu'] * $item['qty']);
+	        $product_total_amount += $item['total'];
 	    }
-	    
-	    $purchaseData['bill_no'] = $this->input->post('bill_no');
+	    $purchaseData['broker_id'] = $this->input->post('broker_id');
+	    $purchaseData['bill_id'] = $bill_id;
 	    $purchaseData['bill_date'] = date("Y-m-d", strtotime($this->input->post('billdate')));
 	    $purchaseData['vendor_id'] = $seller_id;
 	    $purchaseData['product_total_amount'] = $product_total_amount;
@@ -180,8 +182,7 @@ class Purchase extends CI_Controller {
 	        $temp['product_id'] = $item['item'];
 	        $temp['unit_id'] = $item['unit'];
 	        $temp['qty'] = $item['qty'];
-	        $temp['perunit_price'] = $item['ppu'];
-	        $temp['product_total_amount'] = $item['ppu'] * $item['qty'];
+	        $temp['product_total_amount'] = $item['total'];
 	        $itemTableData[] = $temp;
 	        
 	        $this->Stock_model->stock_entry($item);
@@ -266,6 +267,6 @@ class Purchase extends CI_Controller {
 	    
 	    $this->pdf->loadHtml($htmlcontant);
 	    $this->pdf->render();
-	    $this->pdf->stream("$bill_no.pdf",array('Attachment'=>1));
+	    $this->pdf->stream("$bill_no.pdf",array('Attachment'=>0));
 	}
 }

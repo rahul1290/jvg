@@ -37,8 +37,8 @@
                                     	<thead>
                                         	<tr>
                                         		<th>SNo.</th>
-                                        		<th>Bill No.</th>
                                         		<th>Vendor Name</th>
+                                        		<th>Broker Name</th>
                                         		<th>Pre Tax Amount</th>
                                         		<th>Tax Amount</th>
                                         		<th>Total Amount</th>
@@ -110,16 +110,16 @@
             				$.each(response.data,function(key,value){
             					x = x + '<tr>'+
                     						'<td>'+ parseInt(key + 1) +'</td>'+
-                    						'<td>'+ value.bill_no + '</td>'+
                     						'<td>'+ value.vendor_name +'</td>'+
+                    						'<td>'+ value.broker_name + '</td>'+
                     						'<td>'+ indrupee_format(value.product_total_amount) +'</td>'+
                     						'<td>'+ indrupee_format(value.gst_amount) +'</td>'+
                     						'<td>'+ indrupee_format(value.grandtotal_amount) + '</td>'+
                     						'<td>'+ value.bill_date + '</td>'+
                     						'<td>'+	
-                    							'<a href="'+ baseUrl+'purchase/bill_entry_update/'+value.bill_no +'" class="btn btn-secondary btn-sm">Edit</a>'+
-                    							'<input type="button" data-billid="'+ value.bill_no +'" class="view btn btn-primary btn-sm" value="View"/>'+
-                    							'<a target="_blank" href="'+ baseUrl+'purchase/purchase_pdf/'+value.bill_no +'" class="btn btn-info btn-sm">PDF</a>'+
+                    							'<a href="'+ baseUrl+'purchase/bill_entry_update/'+value.purchase_id +'" class="btn btn-secondary btn-sm">Edit</a>'+
+                    							'<input type="button" data-billid="'+ value.purchase_id +'" class="view btn btn-primary btn-sm" value="View"/>'+
+                    							'<a target="_blank" href="'+ baseUrl+'purchase/purchase_pdf/'+value.purchase_id +'" class="btn btn-info btn-sm">PDF</a>'+
                     						'</td>'+
                     					'</tr>';
             				});
@@ -156,16 +156,15 @@
         			},
         			success : function(response){
         				console.log(response)
-        				$('#modalTitle').html('<p style="line-height:7px;"><span class="text-primary">Bill No. </span>: '+ response.data.billdetail[0].bill_no +'</p>'+
-        									  '<p style="line-height:10px;"><span class="text-primary">Bill Date </span>: '+ response.data.billdetail[0].bill_date +'</p>'+
-        									  '<p style="line-height:7px;"><span class="text-primary">Vendor Name </span>:'+ response.data.billdetail[0].vendor_name +'</p>');
+        				$('#modalTitle').html('<p style="line-height:10px;"><span class="text-primary">Bill Date </span>: '+ response.data.billdetail[0].bill_date +'</p>'+
+        									  '<p style="line-height:7px;"><span class="text-primary">Vendor Name </span>:'+ response.data.billdetail[0].vendor_name +'</p>'+
+        									  '<p style="line-height:7px;"><span class="text-primary">Broker Name </span>:'+ response.data.billdetail[0].broker_name +'</p>');
         				var x = '<table class="table table-bordered"><tr>'+
         								'<th>Sno.</th>'+
         								'<th>Product Name</th>'+
         								'<th>Product Code</th>'+
         								'<th>Qunatity</th>'+
         								'<th>Unit</th>'+
-        								'<th>PPU</th>'+
         								'<th>Total</th>'+
         							'</tr>';
         				$.each(response.data.items,function(key,value){
@@ -175,25 +174,20 @@
         								'<td>'+ value.productcode +'</td>'+
         								'<td>'+ value.qty +'</td>'+
         								'<td>'+ value.unitname +'</td>'+
-        								'<td>'+ indrupee_format(value.perunit_price) +'</td>'+
         								'<td>'+ indrupee_format(value.product_total_amount) +'</td>'+
         							'</tr>';
         				});
         				x = x + '<tr class="bg-dark text-light">'+
-        							'<td colspan="6" class="text-center">Total</td>'+
-        							'<td colspan="6">'+ indrupee_format(response.data.billdetail[0].product_total_amount) +'</td>'+
-        						'</tr>'+
-								'<tr>'+
-        							'<td colspan="6" class="text-center">Discount Amount</td>'+
-        							'<td colspan="6">'+ indrupee_format(response.data.billdetail[0].discount) +'</td>'+
+        							'<td colspan="5" class="text-right">Total</td>'+
+        							'<td colspan="5">'+ indrupee_format(response.data.billdetail[0].product_total_amount) +'</td>'+
         						'</tr>'+
         						'<tr>'+
-        							'<td colspan="6" class="text-center">GST Amount</td>'+
-        							'<td colspan="6">'+ indrupee_format(response.data.billdetail[0].gst_amount) +'</td>'+
+        							'<td colspan="5" class="text-right">GST Amount</td>'+
+        							'<td colspan="5">'+ indrupee_format(response.data.billdetail[0].gst_amount) +'</td>'+
         						'</tr>'+
         						'<tr class="bg-dark text-danger">'+
-        							'<td colspan="6" class="text-center">Payable Amount</td>'+
-        							'<td colspan="6"><b>'+ indrupee_format(response.data.billdetail[0].grandtotal_amount) +'</b></td>'+
+        							'<td colspan="5" class="text-right">Payable Amount</td>'+
+        							'<td colspan="5"><b>'+ indrupee_format(response.data.billdetail[0].grandtotal_amount) +'</b></td>'+
         						'</tr>';
         				x = x + '</table>';
         				$('#modalBody').html(x);

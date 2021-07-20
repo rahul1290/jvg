@@ -27,19 +27,14 @@
                                 	<p class="text-center text-danger.Try again..."><?php echo $this->session->flashdata('msg'); ?></p>
                                     <form name="f1" method="POST" action='#'>
                                     	
-                                    	<div class="form-row">
-                                            <div class="form-group col-md-6">
-                                              <label for="inputEmail4">Bill No.<span class="text-danger">*</span></label>
-                                              <input type="text" class="form-control form-control-sm" id="billno" name="billno" readonly placeholder="bill no" value="<?php echo $billno;?>">
-                                              <div id="billno_error" class="text-danger" style="display: none;"></div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label col-form-label-sm">Purchase Date<span class="text-danger">*</span></label>
+                                            <div class="col-sm-10">
+                                            	<input type="hidden" id="bill_id" value="<?php echo $billno; ?>"/>
+                                            	<input type="text" class="form-control form-control-sm" id="billdate" name="billdate" placeholder="Date" value="<?php echo date('d-m-Y',strtotime($bill_detail[0]['bill_date'])); ?>">
+                                              	<div id="billdate_error" class="text-danger" style="display: none;"></div>
                                             </div>
-                                            <div class="form-group col-md-6">
-                                              <label for="inputPassword4">Bill Date<span class="text-danger">*</span></label>
-                                              <input type="text" class="form-control form-control-sm" id="billdate" name="billdate" placeholder="Date" value="<?php echo date('d-m-Y',strtotime($bill_detail[0]['bill_date'])); ?>">
-                                              <div id="billdate_error" class="text-danger" style="display: none;"></div>
-                                            </div>
-                                          </div>
-                                    	
+                                        </div>
                                         <div class="form-group row">
                                             <label class="col-sm-2 col-form-label col-form-label-sm">Seller<span class="text-danger">*</span></label>
                                             <div class="col-sm-10">
@@ -86,6 +81,19 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label col-form-label-sm">Broker<span class="text-danger">*</span></label>
+                                            <div class="col-sm-10">
+                                            	<select id="broker_id" class="form-control">
+                                            		<option value="">Select Broker</option>
+                                            		<?php foreach($broker_list as $broker){ ?>
+                                            			<option value="<?php echo $broker['id']; ?>" <?php if($bill_detail[0]['broker_id'] == $broker['id']){ echo 'selected'; }?>><?php echo $broker['broker_name']; ?></option>
+                                            		<?php } ?>
+                                            	</select>
+                                            	<input class="mt-1" style="display:none;" id="other_vendor" type="text" placeholder="Enter vendor name"/>
+                                            	<div id="other_vendor_error" class="text-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
                                             <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Items</label>
                                             <div class="col-sm-10 bg-secondary text-light">
 												<div class="row">
@@ -101,23 +109,17 @@
 													</select>
 													
 												</div>
-                                            	<div class="mt-2">
+                                            	<div class="mt-2 pb-1">
 													<table class="text-light">
-														<tr>
-															<td>Price per unit</td>
-															<td>
-																<input type="number" id="ppu" placeholder="Prie Per Unit"/>
-															</td>
-														</tr>
+														
 														<tr>
 															<td>Total</td>
 															<td>
-																<input type="text" id="total" readonly placeholder="total" value="0"/>
+																<input type="text" id="total" placeholder="total" value="0"/>
 															</td>
-														</tr>
-														<tr class="pt-4">
+														
 															<td></td>
-															<td><input type="button" value="Add Item" id="add_item" class="btn btn-info"></td>
+															<td><input type="button" value="Add Item" id="add_item" class="btn btn-sm btn-info"></td>
 														</tr>
 													</table>
 													
@@ -125,7 +127,10 @@
                                             </div>
                                         </div>
                                         
-                                        </br>
+                                        <br/>
+                                        <hr/>
+                                        
+                                        
                                         <div class="form-group row">
                                             <div class="offset-2 col-sm-9">	
                                             	<div class="table-responsive">
@@ -135,10 +140,6 @@
                                             		<tr>
                                             			<td>GST Amount</td>
                                             			<td><input type="text" value="0" id="gst_amount"/></td>
-                                            		</tr>
-                                            		<tr>
-                                            			<td>Discount</td>
-                                            			<td><input type="text" value="0" id="discount_per"/></td>
                                             		</tr>
                                             	</table>
                                             	
@@ -174,12 +175,10 @@
         	var baseUrl = $('#baseurl').val();
         	var items =[];
         	$('#gst_amount').val(<?php echo $bill_detail[0]['gst_amount']; ?>);
-        	$('#discount_per').val(<?php echo (($bill_detail[0]['discount'] * 100)/$bill_detail[0]['product_total_amount']); ?>);
         	<?php foreach($bill_items as $item){ ?>
         	      items.push({'item':<?php echo $item['product_id']; ?>,
         	      			  'itemText':'<?php echo $item['productname']; ?>',
-        	      			  'ppu': <?php echo $item['perunit_price']; ?>,
-        	      			  'total' : <?php echo $item['perunit_price'] * $item['qty']?>,
+        	      			  'total' : <?php echo $item['product_total_amount'];?>,
         	      			  'unit' : <?php echo $item['unit_id']?>,
         	      			  'unitText' : '<?php echo $item['unitname']?>',
         	      			  'qty' : '<?php echo $item['qty']?>'
@@ -302,7 +301,6 @@
 				temp['itemText'] = $('#item option:selected').text();
 				temp['unit'] = $('#unit').val();
 				temp['unitText'] = $('#unit option:selected').text();
-				temp['ppu'] = $('#ppu').val();
 				temp['qty'] = $('#quantity').val();
 				temp['total'] = $('#total').val();
 				
@@ -318,7 +316,6 @@
 							'<th>Item</th>'+
 							'<th>Quantity</th>'+
 							'<th>Unit</th>'+
-							'<th>PPU</th>'+
 							'<th>Total</th>'+
 							'<th></th>'+	
 						'</tr></thead><tbody>';
@@ -330,7 +327,6 @@
 								'<td>'+ value.itemText +'</td>'+
 								'<td>'+ value.qty +'</td>'+
 								'<td>'+ value.unitText +'</td>'+
-								'<td>'+ value.ppu +'</td>'+
 								'<td>'+ value.total +'</td>'+
 								'<td><input type="button" value="del" data-index="'+ key +'" class="btn btn-danger item-del"/></td>'+
 							'</tr>';
@@ -339,11 +335,8 @@
 				if(isNaN(gstAmount) || gstAmount == ''){
 					gstAmount = 0;
 				}
-				var discount = (totalBill * parseFloat($('#discount_per').val()))/100;
-				if(isNaN(discount) || discount == ''){
-					discount = 0;
-				}
-				var payableAmount = ((parseFloat(totalBill) + parseFloat(gstAmount)) - parseFloat(discount));
+				
+				var payableAmount = ((parseFloat(totalBill) + parseFloat(gstAmount)));
 				
 				x = x + '<tr class="bg-secondary text-light">'+
 							'<td colspan="5">GrandTotal</td>'+
@@ -352,10 +345,6 @@
 						'<tr class="bg-secondary text-light">'+
 							'<td colspan="5">GST Amount</td>'+
 							'<td colspan="2" class="text-left">'+ gstAmount +'</td>'+
-						'</tr>'+
-						'<tr class="bg-secondary text-light">'+
-							'<td colspan="5">Discount</td>'+
-							'<td colspan="2" class="text-left">'+ discount +'</td>'+
 						'</tr>'+
 						'<tr class="bg-secondary text-light">'+
 							'<td colspan="5">Payable Amount</td>'+
@@ -506,14 +495,15 @@
 							'items': items,
 							'get_amount' : $('#gst_amount').val(),
 							'discount_per' : $('#discount_per').val(),
-							'bill_no' : $('#billno').val(),
 							'other_vendor' : $('#other_vendor').val(),
+							'bill_id' : $('#bill_id').val(),
 							'billdate' : $('#billdate').val(),
 							'seller_id' : $('#seller_id').val(),
 							'contact_no' : $('#contact_no').val(),
 							'alternet_contact' : $('#alternet_contact').val(),
 							'gst_no' : $('#gst_no').val(),
-							'address' : $('#address').val()
+							'address' : $('#address').val(),
+							'broker_id' : $('#broker_id').val()
 						},
 						dataType : 'json',
 						success: function(response){
@@ -552,10 +542,6 @@
 						}
 				});	
             });
-
-			$(document).on('keyup','#ppu',function(){	
-				$('#quantity').trigger('keyup');
-			});
 			
 			$(document).on('change','#unit',function(){
 				var productId = $('#item').val();
@@ -579,14 +565,8 @@
             
             $(document).on('keyup','#quantity',function(){
             	let qty = $(this).val();
-            	let ppu = $('#ppu').val();
             	let gstamount = $('#item_gst').val();
-            	let total = (qty*ppu).toFixed(2);
-				let discount = $('#item_discount').val();
-
-            	let itemdiscount = (total*discount)/100;
-            	$('#total').val(total);
-            	$('#item_grand_total').val(parseInt(total) + parseFloat(gstamount) - parseFloat(itemdiscount)).toFixed(2);
+            	$('#item_grand_total').val(parseInt(total) + parseFloat(gstamount)).toFixed(2);
             });
             
             
