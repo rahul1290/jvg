@@ -1,8 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-
-
 class Sales extends CI_Controller {
 
 	function __construct() {
@@ -11,6 +9,34 @@ class Sales extends CI_Controller {
 		$this->load->database();
 		$this->load->model(array('Auth_model','Vendor_model','Product_model','Unit_model','Stock_model','Customer_model','State_model','Sales_model','Broker_model'));
 		$this->load->library(array('session','form_validation','pdf','mylibrary'));
+    }
+    
+    function sale_order(){
+        if($this->session->userdata('userId') == null){
+            redirect('Auth','refresh');
+        }
+        $data['vendor_list'] = $this->Vendor_model->list();
+        $data['broker_list'] = $this->Broker_model->list();
+        $data['products'] = $this->Product_model->list();
+        
+        $filtredList = array();
+        $search = array();
+        foreach($data['products'] as $product){
+            if(!in_array($product['code'],$search)){
+                array_push($search,$product['code']);
+                $filtredList[] = $product;
+            }
+        }
+        $data['products'] = $filtredList;
+        
+        $data['units'] = $this->Unit_model->list();
+        $data['header'] = $this->load->view('common/header','',true);
+        $data['navbar'] = $this->load->view('common/navbar','',true);
+        $data['footer'] = $this->load->view('common/footer','',true);
+        $data['topbar'] = $this->load->view('common/topbar','',true);
+        $data['copyright'] = $this->load->view('common/copyright','',true);
+        $data['body'] = $this->load->view('pages/sales_order',$data,true);
+        $this->load->view('layout',$data);
     }
 
 	function index(){
@@ -201,5 +227,70 @@ class Sales extends CI_Controller {
 	    $data['sale_detail'][0]['total_in_words'] = $this->mylibrary->get_words_r($data['sale_detail'][0]['grand_total'] + $data['sale_detail'][0]['total_tax_amount']);
 	    $data['bill_detail'] = $this->Sales_model->sales_billitem_detail($sale_id);
 	    echo json_encode(array('data'=>$data,'status'=>200));
+	}
+	
+	
+	function sales_order_entry(){
+	    $seller_id = $this->input->post('seller_id');
+	    
+	    if($this->input->post('seller_id') == 'oth'){
+	        $data['vendor_name'] = $this->input->post('other_vendor');
+	        $data['contact_no'] = $this->input->post('contact_no');
+	        $data['Alternate_contact_no'] = $this->input->post('alternet_contact');
+	        $data['gst_no'] = $this->input->post('gst_no');
+	        $data['address'] = $this->input->post('address');
+	        $data['created_by'] = $this->session->userdata('userId');
+	        $data['createdate'] = date('Y-m-d H:i:s');
+	        if($this->Vendor_model->create($data)){
+	            $seller_id = $this->db->insert_id();
+	        }
+	    }
+	    
+	    $items = $this->input->post('items');
+	    $product_total_amount = 0;
+	    $itemTableData = array();
+	    
+	    foreach($items as $item){
+	        $product_total_amount += ($item['total']);
+	    }
+	    $salesorder['bill_date'] = date("Y-m-d", strtotime($this->input->post('billdate')));
+	    $salesorder['vendor_id'] = $seller_id;
+	    $salesorder['broker_id'] = $this->input->post('broker_id');
+	    $salesorder['product_total_amount'] = $product_total_amount;
+	    $salesorder['purchase_date'] = date("Y-m-d", strtotime($this->input->post('billdate')));
+	    $salesorder['cgst'] = $this->input->post('cgst');
+	    $salesorder['sgst'] = $this->input->post('sgst');
+	    $salesorder['igst'] = $this->input->post('igst');
+	    $salesorder['grandtotal_amount'] = (($product_total_amount + $salesorder['cgst'] + $salesorder['sgst'] + $salesorder['igst']));
+	    $salesorder['created_at'] = date('Y-m-d H:i:s');
+	    $salesorder['created_by'] = $this->session->userdata('userId');
+	    
+	    
+	    
+	    $this->db->trans_begin();
+	    
+	    $result = $this->Sales_model->sales_order_create($salesorder);
+	    
+	    foreach($items as $item){
+	        $temp = array();
+	        $temp['purchase_id'] = $result;
+	        $temp['product_id'] = $item['item'];
+	        $temp['unit_id'] = $item['unit'];
+	        $temp['qty'] = $item['qty'];
+	        $temp['product_total_amount'] = $item['total'];
+	        $itemTableData[] = $temp;
+	        
+	        //$this->Stock_model->stock_entry($item);
+	    }
+	    $this->Sales_model->itemCreate($itemTableData);
+	    
+	    if ($this->db->trans_status() === FALSE){
+	        $this->db->trans_rollback();
+	        echo json_encode(array('msg'=>'something went wrong','status'=>500));
+	    }
+	    else{
+	        $this->db->trans_commit();
+	        echo json_encode(array('msg'=>'sales order successfully.','status'=>200));
+	    }
 	}
 }

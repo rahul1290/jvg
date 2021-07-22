@@ -12,6 +12,7 @@ $route['master/customer'] = 'Customer/index';
 $route['master/broker'] = 'Broker/index';
 
 $route['sales/new-order'] = 'Sales';
+$route['sales_order'] = 'Sales/sale_order';
 $route['Dashboard'] = 'Stock';
 $route['stock'] = 'Stock';
 $route['report/vendor'] = 'Vendor/report';

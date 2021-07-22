@@ -79,12 +79,15 @@
                 <div id="collapsefour" class="collapse <?php echo $this->uri->segment(1) == 'sales'? 'show':''; ?>" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-primary py-2 collapse-inner rounded">
                         <a class="collapse-item <?php
-                        echo ($this->uri->segment(1) == 'sales' && ($this->uri->segment(2) == 'new-order')) ? 'active':'';
-                        ?>" href="<?php echo base_url('sales/new-order');?>">New Order</a>
+                            echo ($this->uri->segment(1) == 'sales' && ($this->uri->segment(2) == 'new-order')) ? 'active':'';
+                            ?>" href="<?php echo /* base_url('sales/new-order'); */ base_url('sales_order'); ?>">
+                            	Sales Order
+                        </a>
                         
                         <a class="collapse-item <?php
-                        echo ($this->uri->segment(1) == 'sales' && ($this->uri->segment(2) == 'sales_list')) ? 'active':'';
-                        ?>" href="<?php echo base_url('sales/sales_list');?>">Order List	</a>
+                            echo ($this->uri->segment(1) == 'sales' && ($this->uri->segment(2) == 'sales_list')) ? 'active':'';
+                            ?>" href="<?php echo base_url('sales/sales_list');?>">Order List	
+                        </a>
                     </div>
                 </div>
             </li>

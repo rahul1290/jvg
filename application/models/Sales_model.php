@@ -48,6 +48,17 @@ class Sales_model extends CI_Model{
         return true;
     }
     
+    function sales_order_create($data){
+        print_r($data); die;
+        $this->db->insert('sales_order',$data);
+        return $this->db->insert_id();
+    }
+    
+    function sales_order_itemCreate($data){
+        $this->db->insert_batch('sales_order_item',$data);
+        return true;
+    }
+    
     function generate_bill($bill_no){
         //
     }
