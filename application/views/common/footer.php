@@ -37,6 +37,7 @@
     </div>
 <script>
 	function indrupee_format(amount){
+		console.log(amount);
 		var x=amount;
 		y = x.toString();
 		const v= y.split('.');
@@ -72,5 +73,5 @@
 <script src="<?php echo base_url('assest/');?>js/buttons.html5.min.js"></script>
 <script src="<?php echo base_url('assest/');?>js/buttons.print.min.js"></script>
 <script src="<?php echo base_url('assest/');?>js/dataTables.buttons.min.js"></script>
-<script src="<?php echo base_url('assest/');?>css/jquery-ui.css"></script>
+<link rel="stylesheet" href="<?php echo base_url('assest/');?>css/jquery-ui.css" />
 <script src="<?php echo base_url('assest/');?>js/jquery-ui.js"></script>

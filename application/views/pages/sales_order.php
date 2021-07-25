@@ -1,4 +1,4 @@
-	<body id="page-top">
+<body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
@@ -152,7 +152,7 @@
                                             			<td>SGST</td>
                                             			<td>
                                             				<div class="input-group">
-                                                              <input type="text" id="sgst_amount" value="0" class="form-control" placeholder="SCGST amount percentage" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                                              <input type="text" id="sgst_amount" value="0" class="form-control" placeholder="SGST amount percentage" aria-label="Recipient's username" aria-describedby="basic-addon2">
                                                               <div class="input-group-append">
                                                                 <span class="input-group-text" id="basic-addon2">%</span>
                                                               </div>
@@ -368,7 +368,7 @@
 				var payableAmount = ((parseFloat(totalBill) + parseFloat(cgstAmount) + parseFloat(sgstAmount) + parseFloat(igstAmount)));
 				
 				x = x + '<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">GrandTotal</td>'+
+							'<td colspan="5" class="text-right">Total</td>'+
 							'<td colspan="1" class="text-left">'+ parseFloat(totalBill) +'</td>'+
 						'</tr>';
 						if(cgstAmount > 0){
@@ -393,7 +393,7 @@
 						}
 						
 						x = x + '<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">Payable Amount</td>'+
+							'<td colspan="5" class="text-right">Grand Amount</td>'+
 							'<td colspan="1" class="text-left">'+ payableAmount +'</td>'+
 						'</tr>';  
 				x = x + '</tbody></table>';
@@ -568,7 +568,7 @@
 							if(response.status == 200){
 								alert(response.msg);
 								location.reload();
-								window.location.href = baseUrl + '/purchase/list';
+								window.location.href = baseUrl + '/sales/order-list';
 							} else {
 								alert(response.msg);
 							}

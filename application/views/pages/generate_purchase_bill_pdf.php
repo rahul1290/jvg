@@ -53,35 +53,34 @@
         									<th>Product Code</th>
         									<th>Qunatity</th>
         									<th>Unit</th>
-        									<th>PPU</th>
+        									<th>Rate per Metric Ton</th>
         									<th>Total</th>
         								</tr>
         								<?php $c=1; foreach($bill_detail as $bilitem){?>
         									<tr>
-        									<td><?php echo $c++; ?></td>
-        									<td><?php echo $bilitem['productname'];?></td>
-        									<td><?php echo $bilitem['productcode']; ?></td>
-        									<td><?php echo $bilitem['qty']; ?></td>
-        									<td><?php echo $bilitem['unitname']; ?></td>
-        									<td><?php echo $bilitem['perunit_price']; ?></td>
-        									<td><?php echo $bilitem['product_total_amount']; ?></td>
+        									<td style="text-align: center;"><?php echo $c++; ?>.</td>
+        									<td style="text-align: center;"><?php echo $bilitem['productname'];?></td>
+        									<td style="text-align: center;"><?php echo $bilitem['productcode']; ?></td>
+        									<td style="text-align: center;"><?php echo $bilitem['qty']; ?></td>
+        									<td style="text-align: center;"><?php echo $bilitem['unitname']; ?></td>
+        									<td style="text-align: center;"><?php echo $bilitem['perunit_price']; ?></td>
+        									<td style="text-align: center;"><?php echo $bilitem['product_total_amount']; ?></td>
         								</tr>
         								<?php } ?>
         								<tr>
-        									<td colspan="6" style="text-align: right;">Total</td>
-        									<td><?php echo $purchase_data[0]['product_total_amount']; ?></td>
+        									<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
         								</tr>
         								<tr>
-        									<td colspan="6" style="text-align: right;">Discount Amount</td>
-        									<td><?php echo $purchase_data[0]['discount']; ?></td>
+        									<td colspan="6" style="text-align: right;">Total</td>
+        									<td style="text-align: center;"><?php echo $purchase_data[0]['product_total_amount']; ?></td>
         								</tr>
         								<tr>
         									<td colspan="6" style="text-align: right;">GST Amount</td>
-        									<td><?php echo $purchase_data[0]['gst_amount']; ?></td>
+        									<td style="text-align: center;"><?php echo $purchase_data[0]['gst_amount']; ?></td>
         								</tr>
         								<tr>
         									<td colspan="6" style="text-align: right;">Payable Amount</td>
-        									<td><?php echo $purchase_data[0]['grandtotal_amount']; ?></td>
+        									<td style="text-align: center;"><?php echo $purchase_data[0]['grandtotal_amount']; ?></td>
         								</tr>
         							</table>
 							</td>	

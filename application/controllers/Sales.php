@@ -44,7 +44,7 @@ class Sales extends CI_Controller {
 		if($this->session->userdata('userId') == null){
 			redirect('Auth','refresh');
 		} 
-		$data['customer_list'] = $this->Customer_model->list();
+		$data['vendor_list'] = $this->Vendor_model->list();
 		$data['broker_list'] = $this->Broker_model->list();
 		$data['states'] = $this->State_model->list();
 		$data['products'] = $this->Product_model->list();
@@ -69,19 +69,19 @@ class Sales extends CI_Controller {
 	}
 	
 	function bill_entry(){
-	    $customer_id = $this->input->post('customer_id');
+	    $vendor_id = $this->input->post('vendor_id');
 	    $broker_id = $this->input->post('broker_id');
 	    
 	    if($this->input->post('customer_id') == 'oth'){
-	        $data['customer_name'] = $this->input->post('other_customer');
+	        $data['vendor_name'] = $this->input->post('other_customer');
 	        $data['contact_no'] = $this->input->post('contact_no');
 	        $data['alternet_no'] = $this->input->post('alternet_contact');
 	        $data['gst_no'] = $this->input->post('gst_no');
-	        $data['address'] = $this->input->post('address');
+	        $data['address'] = $this->input->post('address');  
 	        $data['created_by'] = $this->session->userdata('userId');
 	        $data['created_at'] = date('Y-m-d H:i:s');
-	        if($this->Customer_model->create($data)){
-	            $customer_id = $this->db->insert_id();
+	        if($this->Vendor_model->create($data)){
+	            $vendor_id = $this->db->insert_id();
 	        }
 	    }
 	    
@@ -97,7 +97,7 @@ class Sales extends CI_Controller {
 	    $saleData['invoice_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $this->input->post('billdate'))));
 	    
 	    $saleData['GR/RRNo'] = $this->input->post('grrr_no');
-	    $saleData['customer_id'] = $customer_id;
+	    $saleData['vendor_id'] = $vendor_id;
 	    $saleData['broker_id'] = $broker_id;
 	    $saleData['trasport'] = $this->input->post('transname');
 	    $saleData['vehicle_no'] = $this->input->post('vechileno');
@@ -106,29 +106,22 @@ class Sales extends CI_Controller {
 	    $saleData['bill_address'] = $this->input->post('address');
 	    $saleData['shipping_address'] = $this->input->post('shipping_address');
 	    $saleData['state_of_supply'] = $this->input->post('shipping_state');
-	    //$saleData['discount'] = ($product_total_amount * $this->input->post('discount_per'))/100;
-	    $saleData['cgst_amount'] = ($product_total_amount * $this->input->post('cgst'))/100;
-	    $saleData['sgst_amount'] = ($product_total_amount * $this->input->post('sgst'))/100;
-	    $saleData['igst_amount'] = ($product_total_amount * $this->input->post('igst'))/100;
+	    $saleData['insurance'] = $this->input->post('insurance');
+	    $saleData['cgst_amount'] = (($saleData['insurance'] + $product_total_amount) * $this->input->post('cgst'))/100;
+	    $saleData['sgst_amount'] = (($saleData['insurance'] + $product_total_amount) * $this->input->post('sgst'))/100;
+	    $saleData['igst_amount'] = (($saleData['insurance'] + $product_total_amount) * $this->input->post('igst'))/100;
 	    $saleData['total_tax_amount'] = $saleData['cgst_amount'] + $saleData['sgst_amount'] + $saleData['igst_amount'];
 	    $saleData['grand_total'] = $product_total_amount;
-	    //$saleData['grandtotal_amount'] = (($product_total_amount + $saleData['cgst_amount'] + $saleData['sgst_amount'] + $saleData['igst_amount']) - $saleData['discount']);
+	    $saleData['frieght'] = $this->input->post('frieght');
 	    $saleData['created_at'] = date('Y-m-d H:i:s');
 	    $saleData['created_by'] = $this->session->userdata('userId');
 	    
-	    $dataPaymentDetail['status'] = 1;
-	    $dataPaymentDetail['create_date'] = date('Y-m-d H:i:s');
-	    $dataPaymentDetail['created_by'] = $this->session->userdata('userId');
-	    
 	    $this->db->trans_begin();
-	    
     	    $result = $this->Sales_model->create($saleData);
-    	    
     	    foreach($items as $item){
     	        $temp = array();
     	        $temp['sale_id'] = $result;
     	        $temp['product_id'] = $item['item'];
-//     	        $temp['unit_id'] = $item['unit'];
     	        $temp['unit_id'] = 3;
     	        $temp['qty'] = $item['qty'];
     	        $temp['sales_per_unit'] = $item['ppu'];
@@ -143,7 +136,7 @@ class Sales extends CI_Controller {
     	    
     	    $dataPaymentDetail['sales_id'] = $result;
     	    
-    	    $this->Sales_model->payment_detail($dataPaymentDetail);
+    	    //$this->Sales_model->payment_detail($dataPaymentDetail);
 	    
 	    if ($this->db->trans_status() === FALSE){
 	        $this->db->trans_rollback();
@@ -195,6 +188,19 @@ class Sales extends CI_Controller {
 	    $this->load->view('layout',$data);
 	}
 	
+	function bill_list(){
+	    if($this->session->userdata('userId') == null){
+	        redirect('Auth','refresh');
+	    }
+	    $data['header'] = $this->load->view('common/header','',true);
+	    $data['navbar'] = $this->load->view('common/navbar','',true);
+	    $data['footer'] = $this->load->view('common/footer','',true);
+	    $data['topbar'] = $this->load->view('common/topbar','',true);
+	    $data['copyright'] = $this->load->view('common/copyright','',true);
+	    $data['body'] = $this->load->view('pages/billList',$data,true);
+	    $this->load->view('layout',$data);
+	}
+	
 	function sale_list_ajax(){
 	    if($this->input->post('from_date') == ''){
 	        $data['from_date'] = date('Y-m-01');
@@ -207,7 +213,9 @@ class Sales extends CI_Controller {
 	    } else {
 	        $data['to_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $this->input->post('to_date'))));
 	    }
-	    $sales_list = $this->Sales_model->sales_list($data);
+	    
+	    //$sales_list = $this->Sales_model->sales_list($data);
+	    $sales_list = $this->Sales_model->sales_order_list($data);
 	    
 	    if(count($sales_list)>0){
 	       echo json_encode(array('data'=>$sales_list,'status'=>200));
@@ -216,16 +224,51 @@ class Sales extends CI_Controller {
 	    }
 	}
 	
-	function sales_bill_detail_ajax(){
-	    $sale_id = $this->input->post('bill_no');
+	
+	function bill_list_ajax(){
+	    if($this->input->post('from_date') == ''){
+	        $data['from_date'] = date('Y-m-01');
+	    } else {
+	        $data['from_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $this->input->post('from_date'))));
+	    }
 	    
+	    if($this->input->post('to_date') == ''){
+	        $data['to_date'] = date('Y-m-t');
+	    } else {
+	        $data['to_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $this->input->post('to_date'))));
+	    }
+	    
+	    $sales_list = $this->Sales_model->bill_list($data);
+	    
+	    if(count($sales_list)>0){
+	        echo json_encode(array('data'=>$sales_list,'status'=>200));
+	    } else {
+	        echo json_encode(array('status'=>500));
+	    }
+	}
+	
+	function sales_billdetail_ajax(){
+	    $sale_order_id = $this->input->post('bill_no');
 	    
 	    $data['company_info'] = $this->db->get('company_info')->result_array();
-	    $data['sale_detail'] = $this->Sales_model->sales_detail($sale_id);
+	    $data['sale_detail'] = $this->Sales_model->sales_detail($sale_order_id);
 	    $data['sale_detail'][0]['rrno'] = $data['sale_detail'][0]['GR/RRNo'];
+	    $data['sale_detail'][0]['total_in_words'] = $this->mylibrary->get_words_r($data['sale_detail'][0]['grand_total']);
 	    
-	    $data['sale_detail'][0]['total_in_words'] = $this->mylibrary->get_words_r($data['sale_detail'][0]['grand_total'] + $data['sale_detail'][0]['total_tax_amount']);
-	    $data['bill_detail'] = $this->Sales_model->sales_billitem_detail($sale_id);
+	    $data['bill_detail'] = $this->Sales_model->sales_billitem_detail($sale_order_id);
+	    echo json_encode(array('data'=>$data,'status'=>200));
+	}
+	
+	function sales_bill_detail_ajax(){
+	    $sale_order_id = $this->input->post('bill_no');
+	    
+	    
+	    //$data['company_info'] = $this->db->get('company_info')->result_array();
+	    $data['sale_detail'] = $this->Sales_model->sales_order_detail($sale_order_id);
+	    //$data['sale_detail'][0]['rrno'] = $data['sale_detail'][0]['GR/RRNo'];
+	    
+	    $data['sale_detail'][0]['total_in_words'] = $this->mylibrary->get_words_r($data['sale_detail'][0]['grandtotal_amount']);
+	    $data['bill_detail'] = $this->Sales_model->sales_order_billitem_detail($sale_order_id);
 	    echo json_encode(array('data'=>$data,'status'=>200));
 	}
 	
@@ -261,7 +304,12 @@ class Sales extends CI_Controller {
 	    $salesorder['cgst'] = $this->input->post('cgst');
 	    $salesorder['sgst'] = $this->input->post('sgst');
 	    $salesorder['igst'] = $this->input->post('igst');
-	    $salesorder['grandtotal_amount'] = (($product_total_amount + $salesorder['cgst'] + $salesorder['sgst'] + $salesorder['igst']));
+	    $salesorder['grandtotal_amount'] = (
+	        ($product_total_amount + 
+	            (($product_total_amount * $salesorder['cgst'])/100) + 
+	            (($product_total_amount * $salesorder['sgst'])/100) + 
+	            (($product_total_amount * $salesorder['igst'])/100) )
+	        );
 	    $salesorder['created_at'] = date('Y-m-d H:i:s');
 	    $salesorder['created_by'] = $this->session->userdata('userId');
 	    
@@ -270,19 +318,19 @@ class Sales extends CI_Controller {
 	    $this->db->trans_begin();
 	    
 	    $result = $this->Sales_model->sales_order_create($salesorder);
-	    
 	    foreach($items as $item){
 	        $temp = array();
-	        $temp['purchase_id'] = $result;
+	        $temp['sales_order_id'] = $result;
 	        $temp['product_id'] = $item['item'];
 	        $temp['unit_id'] = $item['unit'];
 	        $temp['qty'] = $item['qty'];
+	        $temp['perunit_price'] = $item['ppu'];
 	        $temp['product_total_amount'] = $item['total'];
 	        $itemTableData[] = $temp;
 	        
 	        //$this->Stock_model->stock_entry($item);
 	    }
-	    $this->Sales_model->itemCreate($itemTableData);
+	    $this->Sales_model->sales_order_itemCreate($itemTableData);
 	    
 	    if ($this->db->trans_status() === FALSE){
 	        $this->db->trans_rollback();

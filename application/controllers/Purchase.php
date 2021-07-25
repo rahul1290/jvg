@@ -62,18 +62,40 @@ class Purchase extends CI_Controller {
 	    foreach($items as $item){
 	        $product_total_amount += ($item['total']);
 	    }
+	    
+	    $cgst_amount = 0;
+	    $sgst_amount = 0;
+	    $igst_amount = 0;
+	    if($this->input->post('cgst_amount') == ''){
+	        $cgst_amount = 0;
+	    } else {
+	        $cgst_amount = $this->input->post('cgst_amount');
+	    }
+	    
+	    if($this->input->post('sgst_amount') == ''){
+	        $sgst_amount = 0;
+	    } else {
+	        $sgst_amount = $this->input->post('sgst_amount');
+	    }
+	    
+	    if($this->input->post('igst_amount') == ''){
+	        $igst_amount = 0;
+	    } else {
+	        $igst_amount = $this->input->post('igst_amount');
+	    }
+	    
 	    $purchaseData['bill_date'] = date("Y-m-d", strtotime($this->input->post('billdate')));
 	    $purchaseData['vendor_id'] = $seller_id;
 	    $purchaseData['broker_id'] = $this->input->post('broker_id');
 	    $purchaseData['product_total_amount'] = $product_total_amount;
 	    $purchaseData['purchase_date'] = date("Y-m-d", strtotime($this->input->post('billdate')));
 	    $purchaseData['discount'] = 0;
-	    $purchaseData['gst_amount'] = $this->input->post('get_amount');
-	    $purchaseData['grandtotal_amount'] = (($product_total_amount + $purchaseData['gst_amount']) - $purchaseData['discount']);
+	    $purchaseData['cgst_amount'] = ($product_total_amount * $cgst_amount)/100;
+	    $purchaseData['sgst_amount'] = ($product_total_amount * $sgst_amount)/100;
+	    $purchaseData['igst_amount'] = ($product_total_amount * $igst_amount)/100;
+	    $purchaseData['grandtotal_amount'] = ($product_total_amount + $purchaseData['cgst_amount'] + $purchaseData['sgst_amount'] + $purchaseData['igst_amount']);
 	    $purchaseData['created_at'] = date('Y-m-d H:i:s');
 	    $purchaseData['created_by'] = $this->session->userdata('userId');
-	    
-	    
 	    
 	    $this->db->trans_begin();
 	    
@@ -84,6 +106,7 @@ class Purchase extends CI_Controller {
     	        $temp['purchase_id'] = $result;
     	        $temp['product_id'] = $item['item'];
     	        $temp['unit_id'] = $item['unit'];
+    	        $temp['perunit_price'] = $item['ppu'];
     	        $temp['qty'] = $item['qty'];
     	        $temp['product_total_amount'] = $item['total'];
     	        $itemTableData[] = $temp; 
@@ -207,7 +230,6 @@ class Purchase extends CI_Controller {
 	    if($this->session->userdata('userId') == null){
 	        redirect('Auth','refresh');
 	    }
-	    //$data['purchase_list'] = $this->Purchase_model->purchase_list();
 	    $data['header'] = $this->load->view('common/header','',true);
 	    $data['navbar'] = $this->load->view('common/navbar','',true);
 	    $data['footer'] = $this->load->view('common/footer','',true);
@@ -229,6 +251,8 @@ class Purchase extends CI_Controller {
 	    } else {
 	        $data['to_date'] = date('Y-m-d', strtotime(str_replace('/', '-', $this->input->post('to_date'))));
 	    }
+	    
+	    $data['broker_id'] = $this->input->post('broker');
 	    
 	    $purchase_list = $this->Purchase_model->purchase_list($data);
 	    
@@ -260,13 +284,28 @@ class Purchase extends CI_Controller {
 	    
 	    $data['header'] = $this->load->view('common/header','',true);
 	    $data['footer'] = $this->load->view('common/footer','',true);
-	    //$data['copyright'] = $this->load->view('common/copyright','',true);
-	    //$htmlcontant = $this->load->view('pages/generate_purchase_bill_pdf',$data);
 	    $htmlcontant = $this->load->view('pages/generate_purchase_bill_pdf',$data,true);
 	    
 	    
 	    $this->pdf->loadHtml($htmlcontant);
 	    $this->pdf->render();
 	    $this->pdf->stream("$bill_no.pdf",array('Attachment'=>0));
+	}
+	
+	
+	function purchase_order_report(){
+	    if($this->session->userdata('userId') == null){
+	        redirect('Auth','refresh');
+	    }
+	    $this->db->select('*');
+	    $data['brokers'] = $this->db->get_where('broker',array('status'=>1))->result_array();
+	    
+	    $data['header'] = $this->load->view('common/header','',true);
+	    $data['navbar'] = $this->load->view('common/navbar','',true);
+	    $data['footer'] = $this->load->view('common/footer','',true);
+	    $data['topbar'] = $this->load->view('common/topbar','',true);
+	    $data['copyright'] = $this->load->view('common/copyright','',true);
+	    $data['body'] = $this->load->view('report/purchase_order',$data,true);
+	    $this->load->view('layout',$data);
 	}
 }

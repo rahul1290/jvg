@@ -1,4 +1,4 @@
-	<body id="page-top">
+<body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
@@ -37,8 +37,7 @@
                                     	<thead>
                                         	<tr>
                                         		<th>SNo.</th>
-                                        		<th>Invoice No</th>
-                                        		<th>Customer Name</th>
+                                        		<th>Buyer Name</th>
                                         		<th>Broker Name</th>
                                         		<th>Pre Tax Amount</th>
                                         		<th>Tax Amount</th>
@@ -85,7 +84,6 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Print</button>
           </div>
         </div>
       </div>
@@ -113,17 +111,16 @@
             				$.each(response.data,function(key,value){
             					x = x + '<tr>'+
                     						'<td>'+ parseInt(key + 1) +'</td>'+
-                    						'<td>'+ value.invoice_no + '</td>'+
-                    						'<td>'+ value.customer_name +'</td>'+
+                    						'<td>'+ value.vendor_name +'</td>'+
                     						'<td>'+ value.broker_name +'</td>'+
-                    						'<td>'+ value.grand_total +'</td>'+
-                    						'<td>'+ value.total_tax_amount +'</td>'+
-                    						'<td>'+ (parseFloat(value.grand_total) + parseFloat(value.total_tax_amount))  + '</td>'+
-                    						'<td>'+ value.invoice_date + '</td>'+
+                    						'<td>'+ value.product_total_amount +'</td>'+
+                    						'<td>'+(parseFloat((value.product_total_amount * value.cgst)/100) + parseFloat((value.product_total_amount * value.sgst)/100) + parseFloat((value.product_total_amount * value.igst)/100)) + '</td>'+
+                    						'<td>'+ value.grandtotal_amount +'</td>'+
+                    						'<td>'+ value.bill_date + '</td>'+
                     						'<td>'+
-                    							'<input type="button" value="Edit" />'+	
-                    							'<input type="button" data-billid="'+ value.sales_id +'" class="view" value="View" />'+
-                    							'<a target="_blank" href="'+ baseUrl +'sales/generate_bill/'+ value.sales_id +'" class="btn btn-info btn-sm">PDF</a>'+
+                    							//'<input type="button" value="Edit" />'+	
+                    							'<input type="button" data-billid="'+ value.sales_order_id +'" class="view" value="View" />'+
+                    							//'<a target="_blank" href="'+ baseUrl +'sales/generate_bill/'+ value.sales_order_id +'" class="btn btn-info btn-sm">PDF</a>'+
                     						'</td>'+
                     					'</tr>';
             				});
@@ -160,183 +157,38 @@
         			success : function(response){
         				console.log(response);
         				$('#modalTitle').html('');
-        				var x = '<table border="1" width="100%">'+
-                						'<tr>'+
-                							'<td colspan="2">'+
-                								'<table width="100%">'+
-                									'<tr>'+
-                										'<td>'+
-                    										'<div class="ml-1 row">'+
-                    											'<div class="col">GSTIN :'+ response.data.company_info[0].gst_no +'</div>'+
-                    											'<div class="col text-right" style="float-right;">Original copy</div>'+
-                    										'</div>'+
-                    										'<div class="text-center">'+
-                                        						'<p><u>TAX INVOICE</u>'+
-                                        						'<br/><b>'+ response.data.company_info[0].comany_name +'</b>'+
-                                        						'<br/>'+ response.data.company_info[0].address +'</p>'+
-                                        					'</div>'+
-                										'</td>'+
-                									'</tr>'+
-                									
-                								'</table>'+
-                							'</td>'+
-                						'</tr>'+
-                						'<tr>'+
-                							'<td width="50%">'+
-                								'<table width="100%">'+
-                									'<tr>'+
-                										'<td>Invoice No.</td>'+
-                										'<td>:'+ response.data.sale_detail[0].invoice_no +'</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td>Date of Invoice</td>'+
-                										'<td>:'+ response.data.sale_detail[0].invoice_date +'</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td>GR/RR No. & Date</td>'+
-                										'<td>:'+ response.data.sale_detail[0].rrno +'</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td>State of Supply</td>'+
-                										'<td>:'+ response.data.sale_detail[0].state_name +'</td>'+
-                									'</tr>'+
-                								'</table>'+
-                							'</td>'+
-                							'<td width="50%">'+
-                								'<table width="100%">'+
-                									'<tr>'+
-                										'<td>Transport</td>'+
-                										'<td>:'+ response.data.sale_detail[0].trasport +'</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td>Vechile No.</td>'+
-                										'<td>:'+ response.data.sale_detail[0].vehicle_no +'</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td>Eway Bill No.</td>'+
-                										'<td>:'+ response.data.sale_detail[0].eway_no +'</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td>Destination</td>'+
-                										'<td>:'+ response.data.sale_detail[0].destination +'</td>'+
-                									'</tr>'+
-                								'</table>'+
-                							'</td>'+
-                						'</tr>'+
-                						'<tr>'+
-                							'<td><b>Billed To :</b><br/>'+
-                                                response.data.sale_detail[0].bill_address +
-                                            '</td>'+
-                							'<td><b>Shipped To:</b><br/>'+
-                								response.data.sale_detail[0].shipping_address +
-                							'</td>'+
-                						'</tr>'+
-                						'<tr>'+
-                							'<td colspan="2">'+
-                								'<table width="100%" border="1">'+
-                									'<tr>'+
-                										'<td width="5%">S.No.</td>'+
-                										'<td width="45%">Description of Goods</td>'+
-                										'<td>HSN/SAC</td>'+
-                										'<td>Quantity</td>'+
-                										'<td>Unit</td>'+
-                										'<td>Rate</td>'+
-                										'<td>Amount</td>'+
-                									'</tr>';
-                									$.each(response.data.bill_detail,function(key,value){
-                									
-                									x = x + '<tr>'+
-                										'<td width="5%">'+ parseInt(key+1) +'</td>'+
-                										'<td width="45%">'+ value.product_name +'</td>'+
-                										'<td>7207</td>'+
-                										'<td>'+ value.qty +'</td>'+
-                										'<td>'+ value.unit_name +'</td>'+
-                										'<td>'+ value.sales_per_unit +'</td>'+
-                										'<td>'+ value.sales_product_amount +'</td>'+
-                									'</tr>';
-                									});
-                									x = x + '<tr>'+
-                										'<td colspan="6"></td>'+
-                										'<td>'+ response.data.sale_detail[0].grand_total +'</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td colspan="6" class="text-right">Insurance :</td>'+
-                										'<td>0.00</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td colspan="6" class="text-right">Add : CGST @ 9.00 %</td>'+
-                										'<td>'+ response.data.sale_detail[0].cgst_amount +'</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td colspan="6" class="text-right">Add : SGST @ 9.00 %</td>'+
-                										'<td>'+ response.data.sale_detail[0].sgst_amount +'</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td colspan="6" class="text-right">Grand Total :</td>'+
-                										'<td>'+ parseFloat(parseFloat(response.data.sale_detail[0].grand_total)+ parseFloat(response.data.sale_detail[0].total_tax_amount)) +'</td>'+
-                									'</tr>'+
-                								'</table>'+
-                							'</td>'+
-                						'</tr>'+
-                						'<tr>'+
-                							'<td colspan="2">'+
-                								'<table>'+
-                									'<tr>'+
-                										'<td><u>Tax%</u>&nbsp;&nbsp;</td>'+
-                										'<td><u>Taxable Amt.</u>&nbsp;&nbsp;</td>'+
-                										'<td><u>CGST</u>&nbsp;&nbsp;</td>'+
-                										'<td><u>SGST</u>&nbsp;&nbsp;</td>'+
-                										'<td><u>Total Tax</u>&nbsp;&nbsp;</td>'+	
-                									'</tr>'+
-                									'<tr>'+
-                										'<td>9%&nbsp;&nbsp;</td>'+
-                										'<td>'+ response.data.sale_detail[0].grand_total +'&nbsp;&nbsp;</td>'+
-                										'<td>'+ response.data.sale_detail[0].cgst_amount +'&nbsp;&nbsp;</td>'+
-                										'<td>'+ response.data.sale_detail[0].sgst_amount +'&nbsp;&nbsp;</td>'+
-                										'<td>'+ response.data.sale_detail[0].total_tax_amount +'&nbsp;&nbsp;</td>'+	
-                									'</tr>'+
-                									'<tr>'+
-                										'<td colspan="5">'+
-                											response.data.sale_detail[0].total_in_words + 
-                										'</td>'+
-                									'</tr>'+
-                								'</table>'+
-                							'</td>'+
-                						'</tr>'+
-                						'<tr>'+
-                							'<td colspan="2">'+
-                								'<table>'+
-                									'<tr>'+
-                										'<td>Bank Details</td>'+
-                										'<td>: Karnataka Bank Ltd., Raigarh Branch</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td>Account No.</td>'+
-                										'<td>: 6 6 1 7 0 0 0 6 0 0 0 0 7 6 0 1</td>'+
-                									'</tr>'+
-                									'<tr>'+
-                										'<td>IFSC Code</td>'+
-                										'<td>: KARB0000661</td>'+
-                									'</tr>'+
-                								'</table>'+
-                							'</td>'+
-                						'</tr>'+
-                						'<tr>'+
-                							'<td>'+
-                								'Terms & Conditions</br>'+
-                                                'E. & O.E.</br>'+
-                                                '1. Goods once sold will not be taken back.</br>'+
-                                                '2. Interest @ 18% p.a. will be charged if the payement</br>'+
-                                                'is not made with in the stipulated time.</br>'+
-                                                '3. Subject to "Raigarh" Jurisdiction only.</br>'+
-                							'</td>'+
-                							'<td class="text-center">'+	
-                								'<p>For '+ response.data.company_info[0].comany_name +'</p>'+
-                								'<br/>'+
-                								'Authorised Signatory'+
-                							'</td>'+
-                						'</tr>'+
-                					'</table>';
+        				var x = '<div>Sale Date : '+ response.data.sale_detail[0].bill_date +'</div>'+
+        						'<div>Buyer Name : '+ response.data.sale_detail[0].vendor_name +'</div>'+
+        						'<div>Broker Name : '+ response.data.sale_detail[0].broker_name +'</div>';
+        				
+        				x = x + '<table class="table table-striped table-bordered"><tr class="bg-dark text-light">'+
+        									'<th>S.No.</th>'+
+        									'<th>Product Name</th>'+
+        									'<th>Quantity</th>'+
+        									'<th>Unit</th>'+
+        									'<th>Total</th>'+
+        								'</tr>'; 		
+        				$.each(response.data.bill_detail,function(key,value){
+        					x = x + '<tr>'+
+        								'<td>'+ parseInt(parseInt(key) + 1) +'</td>'+
+        								'<td>'+ value.product_name +'</td>'+
+        								'<td>'+ value.qty +'</td>'+
+        								'<td>'+ value.unit_name +'</td>'+
+        								'<td>'+ value.product_total_amount +'</td>'+
+        							'</tr>';
+        				});
+        				x = x + '<tr><td></td><td></td><td></td><td></td><td></td></tr>';
+        				if(response.data.sale_detail[0].cgst != 0){
+        					x = x + '<tr><td colspan="4" class="text-right">CGST</td><td>'+ ((response.data.sale_detail[0].product_total_amount * response.data.sale_detail[0].cgst)/100) +'</td></tr>'; 
+        				}
+        				if(response.data.sale_detail[0].sgst != 0){
+        					x = x + '<tr><td colspan="4" class="text-right">CGST</td><td>'+ ((response.data.sale_detail[0].product_total_amount * response.data.sale_detail[0].sgst)/100) +'</td></tr>'; 
+        				}
+        				if(response.data.sale_detail[0].igst != 0){
+        					x = x + '<tr><td colspan="4" class="text-right">CGST</td><td>'+ ((response.data.sale_detail[0].product_total_amount * response.data.sale_detail[0].igst)/100) +'</td></tr>'; 
+        				}
+        				x = x + '<tr><td colspan="4" class="text-right">Grand Total</td><td>'+ response.data.sale_detail[0].grandtotal_amount  +'</td></tr></table>';
+        				
                 					
         				$('#modalBody').html(x);
                                 			

@@ -43,11 +43,15 @@ class Purchase_model extends CI_Model{
     }
     
     function purchase_list($data){
+        
         $this->db->select('*,v.vendor_name,b.broker_name,date_format(p.bill_date,"%d/%m/%Y") as bill_date');
         $this->db->join('vendor_master v','v.vendor_id = p.vendor_id');
         $this->db->join('broker b','b.id = broker_id AND b.status = 1');
         $this->db->where('p.bill_date >=',$data['from_date']);
         $this->db->where('p.bill_date <=',$data['to_date']);
+        if($data['broker_id'] != ''){
+            $this->db->where('b.id',$data['broker_id']);
+        }
         $this->db->order_by('p.bill_date','desc');
         $result = $this->db->get_where('purchase p',array('p.status'=>1))->result_array();
         return $result;

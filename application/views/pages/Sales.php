@@ -1,4 +1,4 @@
-	<body id="page-top">
+<body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
@@ -35,16 +35,16 @@
                                                   			<div id="billno_error" class="text-danger" style="display: none;"></div>
                                                         </div>
                                                         <div class="form-group col-md-4">
-                                                        	<label class="col-sm-4 col-form-label col-form-label-sm">Customer<span class="text-danger">*</span></label>
-                                                            <select id="customer_id" class="form-control">
-                                                        		<option value="">Select Customer</option>
-                                                        		<?php foreach($customer_list as $customer){ ?>
-                                                        			<option value="<?php echo $customer['id']; ?>"><?php echo $customer['customer_name']; ?></option>
+                                                        	<label class="col-sm-4 col-form-label col-form-label-sm">Buyer<span class="text-danger">*</span></label>
+                                                            <select id="vendor_id" class="form-control">
+                                                        		<option value="">Select Buyer</option>
+                                                        		<?php foreach($vendor_list as $vendor){ ?>
+                                                        			<option value="<?php echo $vendor['vendor_id']; ?>"><?php echo $vendor['vendor_name']; ?></option>
                                                         		<?php } ?>
                                                         		<option value="oth">Other</option>
                                                         	</select>
-                                                        	<input class="mt-1" style="display:none;" id="other_customer" type="text" placeholder="Enter customer name"/>
-                                                        	<div id="other_customer_error" class="text-danger" style="display: none;"></div>
+                                                        	<input class="mt-1" style="display:none;" id="other_vendor" type="text" placeholder="Enter vendor name"/>
+                                                        	<div id="other_vendor_error" class="text-danger" style="display: none;"></div>
                                                         </div>
                                                         
                                                         <div class="form-group col-md-4">
@@ -224,7 +224,20 @@
                                     </br>
                                     <div class="form-group row">
                                         <div class="col-sm-12">	
+                                        	<hr/>
                                         	<table id="total_cal" style="display: none;">
+                                        		<tr>
+                                        			<td>Insurance:</td>
+                                        			<td>
+                                        				<input type="text" name="insurance" id="insurance" value="0.00" />
+                                        			</td>
+                                        		</tr>
+                                        		<tr>
+                                        			<td>Frieght:</td>
+                                        			<td>
+                                        				<input type="text" name="frieght" id="frieght" value="0.00" />
+                                        			</td>
+                                        		</tr>
                                         		<tr>
                                         			<td>CGST</td>
                                         			<td>
@@ -250,16 +263,6 @@
                                         			<td>
                                         				<div class="input-group">
                                                           <input type="text" id="igst_amount" value="0" class="form-control" placeholder="IGST amount percentage" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                                          <div class="input-group-append">
-                                                            <span class="input-group-text" id="basic-addon2">%</span>
-                                                          </div>
-                                                        </div>
-                                        			</td>
-                                        		
-                                        			<td>Discount</td>
-                                        			<td>
-                                        				<div class="input-group">
-                                                          <input type="text" id="discount_per" value="0" class="form-control" placeholder="Discount amount percentage" aria-label="Recipient's username" aria-describedby="basic-addon2">
                                                           <div class="input-group-append">
                                                             <span class="input-group-text" id="basic-addon2">%</span>
                                                           </div>
@@ -418,7 +421,6 @@
             });
 
 			function billPreview(i){
-			console.log('420');
 				temp = {};
 				temp['item'] = $('#item').val();
 				temp['itemText'] = $('#item option:selected').text();
@@ -442,7 +444,7 @@
 							'<th>Item</th>'+
 							'<th>Quantity</th>'+
 							'<th>Unit</th>'+
-							'<th>PPU</th>'+
+							'<th>Rate per metric ton</th>'+
 							'<th>Total</th>'+
 							'<th></th>'+	
 						'</tr></thead><tbody>';
@@ -460,34 +462,43 @@
 								'<td><input type="button" value="del" data-index="'+ key +'" class="btn btn-danger item-del"/></td>'+
 							'</tr>';
 				});
-				var cgstAmount = ((totalBill *$('#cgst_amount').val())/100).toFixed(2);
-				var sgstAmount = ((totalBill *$('#sgst_amount').val())/100).toFixed(2);
-				var igstAmount = ((totalBill *$('#igst_amount').val())/100).toFixed(2);
-				//var discount = ((totalBill * $('#discount_per').val())/100).toFixed(2);
+				var cgstAmount = (((totalBill + parseFloat($('#insurance').val())) * $('#cgst_amount').val())/100).toFixed(2);
+				var sgstAmount = (((totalBill + parseFloat($('#insurance').val())) * $('#sgst_amount').val())/100).toFixed(2);
+				var igstAmount = (((totalBill + parseFloat($('#insurance').val())) * $('#igst_amount').val())/100).toFixed(2);
+				//var discount = (((totalBill + parseFloat($('#insurance').val())) * $('#discount_per').val())/100).toFixed(2);
 				
-				var payableAmount = ((parseFloat(totalBill) + parseFloat(cgstAmount) + parseFloat(sgstAmount) + parseFloat(igstAmount)));
+				var payableAmount = ((parseFloat(totalBill) + parseFloat(cgstAmount) + parseFloat(sgstAmount) + parseFloat(igstAmount))).toFixed(2);
 				
 				x = x + '<tr class="bg-secondary text-light">'+
 							'<td colspan="6" class="text-right">Amount</td>'+
 							'<td colspan="2" class="text-left">'+ totalBill +'</td>'+
-						'</tr>'+
-						'<tr class="bg-secondary text-light">'+
+						'</tr>';
+						if($('#insurance').val() != '0.00'){
+						x = x + '<tr class="bg-secondary text-light">'+
+							'<td colspan="6" class="text-right">Insurance</td>'+
+							'<td colspan="2" class="text-left">'+ $('#insurance').val() +'</td>'+
+						'</tr>';
+						}
+						if(cgstAmount != '0.00'){
+						x = x + '<tr class="bg-secondary text-light">'+
 							'<td colspan="6" class="text-right">CGST Amount</td>'+
 							'<td colspan="2" class="text-left">'+ cgstAmount +'</td>'+
-						'</tr>'+
-						'<tr class="bg-secondary text-light">'+
+						'</tr>';
+						}
+						if(sgstAmount != '0.00'){
+						'x = x + <tr class="bg-secondary text-light">'+
 							'<td colspan="6" class="text-right">SGST Amount</td>'+
 							'<td colspan="2" class="text-left">'+ sgstAmount +'</td>'+
-						'</tr>'+
-						'<tr class="bg-secondary text-light">'+
+						'</tr>';
+						}
+						if(igstAmount != '0.00'){
+						x = x +'<tr class="bg-secondary text-light">'+
 							'<td colspan="6" class="text-right">IGST Amount</td>'+
 							'<td colspan="2" class="text-left">'+ igstAmount +'</td>'+
-						'</tr>'+
-// 						'<tr class="bg-secondary text-light">'+
-// 							'<td colspan="6" class="text-right">Discount</td>'+
-// 							'<td colspan="2" class="text-left">'+ discount +'</td>'+
-// 						'</tr>'+
-						'<tr class="bg-secondary text-light">'+
+						'</tr>';
+						}
+						
+						x = x + '<tr class="bg-secondary text-light">'+
 							'<td colspan="6" class="text-right">GrandTotal</td>'+
 							'<td colspan="2" class="text-left">'+ payableAmount +'</td>'+
 						'</tr>';  
@@ -519,12 +530,11 @@
             });
 
 
-        	$(document).on('change','#customer_id',function(){
-        	console.log('515');
+        	$(document).on('change','#vendor_id',function(){
         		$('#shipping_checkbox').prop('checked', false);
         		$('#shipping_address').val('');
-            	var customerId = $(this).val();
-            	if(customerId == 'oth'){
+            	var vendorId = $(this).val();
+            	if(vendorId == 'oth'){
                 	$('#other_customer').show();	
                 	$('#contact_no').val('');
                 	$('#alternet_contact').val('');	
@@ -537,12 +547,12 @@
                 	$('#gst_no').val('');	
                 	$('#address').val('');
                 	
-                	if(customerId != ''){
+                	if(vendorId != ''){
                 		$.ajax({
                         	type: 'POST',
-                            url : baseUrl + 'customer/getdetail',
+                            url : baseUrl + 'vendor/getdetail',
                             data : {
-                            	customerId: customerId
+                            	vendorId : vendorId
                             },
                             dataType : 'json',
                             success: function(response){
@@ -589,14 +599,14 @@
             		$('#seller_id_error').html('').show();
             	}
             	
-            	if($('#customer_id').val() == 'oth'){
-            		if($('#other_customer').val() == ''){
-            			$('#other_customer').addClass('haveerror');
-            			$('#other_customer_error').html('Enter customer name').show();
+            	if($('#vendor_id').val() == 'oth'){
+            		if($('#other_vendor').val() == ''){
+            			$('#other_vendoe').addClass('haveerror');
+            			$('#other_vendor_error').html('Enter vendor name').show();
             			formvalid = false;
             		} else {
-            			$('#other_customer').removeClass('haveerror');
-            			$('#other_customer_error').html('').hide();
+            			$('#other_vendor').removeClass('haveerror');
+            			$('#other_vendor_error').html('').hide();
             		}	
             	}
             	
@@ -707,6 +717,7 @@
 				}
             	
 				if(formvalid){
+					console.log('asdasd');
 					$.ajax({
 						type: 'POST',
 						url : baseUrl + 'Sales/bill_entry',
@@ -726,7 +737,7 @@
 							'alternet_contact' : $('#alternet_contact').val(),
 							'gst_no' : $('#gst_no').val(),
 							'address' : $('#address').val(),
-							'customer_id' : $('#customer_id').val(),
+							'vendor_id' : $('#vendor_id').val(),
 							'grrr_no' : $('#grrr_no').val(),
 							'grr_date' : $('#grr_date').val(),
 							'transname' : $('#transname').val(),
@@ -736,13 +747,15 @@
 							'shipping_destination' : $('#shipping_destination').val(),
 							'shipping_address' : $('#shipping_address').val(),
 							'shipping_state' : $('#shipping_state').val(),
-							'broker_id' : $('#broker_id').val()
+							'broker_id' : $('#broker_id').val(),
+							'insurance' : $('#insurance').val(),
+							'frieght' : $('#frieght').val()
 						},
 						dataType : 'json',
 						success: function(response){
 							if(response.status == 200){
 								alert(response.msg);
-								window.location.href = baseUrl + '/sales/sales_list';
+								window.location.href = baseUrl + '/bill/bill-list';
 							} else {
 								alert(response.msg);
 							}
@@ -803,7 +816,7 @@
 						success: function(response){
 							$('#ppu').val(response.data[0].ppu);
 
-							$( "#quantity" ).trigger( "keyup" );
+							//$( "#quantity" ).trigger( "keyup" );
 						}
 				});
 			});
@@ -818,7 +831,7 @@
             
             
             
-            $(document).on('keyup','#cgst_amount,#sgst_amount,#igst_amount,#discount_per',function(){
+            $(document).on('keyup','#cgst_amount,#insurance,#frieght,#sgst_amount,#igst_amount,#discount_per',function(){
             	billPreview(0);
             });
             

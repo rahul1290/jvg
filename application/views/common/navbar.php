@@ -80,13 +80,35 @@
                     <div class="bg-primary py-2 collapse-inner rounded">
                         <a class="collapse-item <?php
                             echo ($this->uri->segment(1) == 'sales' && ($this->uri->segment(2) == 'new-order')) ? 'active':'';
-                            ?>" href="<?php echo /* base_url('sales/new-order'); */ base_url('sales_order'); ?>">
+                            ?>" href="<?php echo base_url('sales/new-order'); ?>">
                             	Sales Order
                         </a>
                         
                         <a class="collapse-item <?php
-                            echo ($this->uri->segment(1) == 'sales' && ($this->uri->segment(2) == 'sales_list')) ? 'active':'';
-                            ?>" href="<?php echo base_url('sales/sales_list');?>">Order List	
+                            echo ($this->uri->segment(1) == 'sales' && ($this->uri->segment(2) == 'order-list')) ? 'active':'';
+                            ?>" href="<?php echo base_url('sales/order-list');?>">Order List	
+                        </a>
+                    </div>
+                </div>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link <?php echo $this->uri->segment(1) == 'bill'? '':'collapsed'; ?>" href="#" data-toggle="collapse" data-target="#collapsefive"
+                    aria-expanded="true" aria-controls="collapsefive">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Bills</span>
+                </a>
+                <div id="collapsefive" class="collapse <?php echo $this->uri->segment(1) == 'bill'? 'show':''; ?>" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-primary py-2 collapse-inner rounded">
+                        <a class="collapse-item <?php
+                        echo ($this->uri->segment(1) == 'bill' && $this->uri->segment(2) == 'bill-generate') ? 'active':'';
+                            ?>" href="<?php echo base_url('bill/bill-generate'); ?>">
+                            	Bill Generation
+                        </a>
+                        
+                        <a class="collapse-item <?php
+                            echo ($this->uri->segment(1) == 'bill' && ($this->uri->segment(2) == 'bill-list')) ? 'active':'';
+                            ?>" href="<?php echo base_url('bill/bill-list');?>">Bill List	
                         </a>
                     </div>
                 </div>
@@ -99,6 +121,30 @@
                 Report
             </div>
 
+			
+			<li class="nav-item">
+                <a class="nav-link <?php echo $this->uri->segment(1) == 'report'? '':'collapsed'; ?>" href="#" data-toggle="collapse" data-target="#collapsesix"
+                    aria-expanded="true" aria-controls="collapsesix">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Reports</span>
+                </a>
+                <div id="collapsesix" class="collapse <?php echo $this->uri->segment(1) == 'report'? 'show':''; ?>" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-primary py-2 collapse-inner rounded">
+                        <a class="collapse-item <?php
+                        echo ($this->uri->segment(1) == 'report' && $this->uri->segment(2) == 'purchase-order') ? 'active':'';
+                            ?>" href="<?php echo base_url('report/purchase-order'); ?>">
+                            	Purchase Order
+                        </a>
+                        
+                        <a class="collapse-item <?php
+                            echo ($this->uri->segment(1) == 'bill' && ($this->uri->segment(2) == 'bill-list')) ? 'active':'';
+                            ?>" href="<?php echo base_url('bill/bill-list');?>">
+                            Sales Order	
+                        </a>
+                    </div>
+                </div>
+            </li>
+			
             <!-- Nav Item - Charts -->
             <li class="nav-item <?php if($this->uri->segment(1) == 'Dashboard' || $this->uri->segment(1) == 'stock'){
                 echo "active";

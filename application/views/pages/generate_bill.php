@@ -120,21 +120,31 @@
 									</tr>
 									<?php } ?>
 									<tr>
-										<td colspan="6"></td>
+										<td colspan="6" style="text-align: right;">Total</td>
 										<td><?php echo $sales_data[0]['grand_total']; ?></td>
 									</tr>
 									<tr>
 										<td colspan="6" style="text-align: right;">Insurance :</td>
-										<td>0.00</td>
+										<td><?php echo $sales_data[0]['insurance']; ?></td>
 									</tr>
+									<?php if($sales_data[0]['cgst_amount'] != '0'){?>
 									<tr>
 										<td colspan="6"style="text-align: right;">Add : CGST @ 9.00 %</td>
 										<td><?php echo $sales_data[0]['cgst_amount']; ?></td>
 									</tr>
+									<?php } ?>
+									<?php if($sales_data[0]['sgst_amount'] != '0'){?>
 									<tr>
 										<td colspan="6" style="text-align: right;">Add : SGST @ 9.00 %</td>
 										<td><?php echo $sales_data[0]['sgst_amount'];?></td>
 									</tr>
+									<?php } ?>
+									<?php if($sales_data[0]['igst_amount'] != '0'){?>
+									<tr>
+										<td colspan="6" style="text-align: right;">Add : IGST @ 9.00 %</td>
+										<td><?php echo $sales_data[0]['igst_amount'];?></td>
+									</tr>
+									<?php } ?>
 									<tr>
 										<td colspan="6" style="text-align: right;">Grand Total :</td>
 										<td><?php echo $sales_data[0]['grand_total'] + $sales_data[0]['total_tax_amount'];?></td>
@@ -154,7 +164,7 @@
 									</tr>
 									<tr>
 										<td>9%&nbsp;&nbsp;</td>
-										<td><?php echo $sales_data[0]['grand_total']; ?>&nbsp;&nbsp;</td>
+										<td><?php echo $sales_data[0]['grand_total'] + $sales_data[0]['insurance']; ?>&nbsp;&nbsp;</td>
 										<td><?php echo $sales_data[0]['cgst_amount']; ?>&nbsp;&nbsp;</td>
 										<td><?php echo $sales_data[0]['sgst_amount']; ?>&nbsp;&nbsp;</td>
 										<td><?php echo $sales_data[0]['total_tax_amount']; ?>&nbsp;&nbsp;</td>	
