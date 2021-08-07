@@ -51,7 +51,7 @@
                                         </div>
                                         
                                         <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label col-form-label-sm">Contact No.<span class="text-danger">*</span></label>
+                                            <label class="col-sm-2 col-form-label col-form-label-sm">Contact No.</label>
                                             <div class="col-sm-10">
                                             	<input type="text" class="form-control form-control-sm" id="contact_no" name="contact_no" placeholder="Contact No." value="<?php echo set_value('contact_no'); ?>">
                                             	<div id="contact_no_error" class="text-danger" style="display: none;"></div>
@@ -326,8 +326,7 @@
 							'<th>sno.</th>'+
 							'<th>Item</th>'+
 							'<th>Quantity</th>'+
-							'<th>Unit</th>'+
-							'<th>Rate per MT	</th>'+
+							'<th>Rate Per Metric Ton</th>'+
 							'<th></th>'+	
 						'</tr></thead><tbody>';
 				var totalBill = 0;	
@@ -336,8 +335,7 @@
 					x = x + '<tr>'+
 								'<td>'+ parseInt(key+1) +'.</td>'+
 								'<td>'+ value.itemText +'</td>'+
-								'<td>'+ value.qty +'</td>'+
-								'<td>'+ value.unitText +'</td>'+
+								'<td>'+ value.qty +'<small> ('+ value.unitText +')</small></td>'+
 								'<td>'+ value.ppu +'</td>'+
 								'<td><input type="button" value="del" data-index="'+ key +'" class="btn btn-danger item-del"/></td>'+
 							'</tr>';
@@ -368,32 +366,32 @@
 				var payableAmount = ((parseFloat(totalBill) + parseFloat(cgstAmount) + parseFloat(sgstAmount) + parseFloat(igstAmount)));
 				
 				x = x + '<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">Total</td>'+
+							'<td colspan="4" class="text-right">Total</td>'+
 							'<td colspan="1" class="text-left">'+ parseFloat(totalBill) +'</td>'+
 						'</tr>';
 						if(cgstAmount > 0){
 						x = x + '<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">CGST Amount</td>'+
+							'<td colspan="4" class="text-right">CGST Amount</td>'+
 							'<td colspan="1" class="text-left">'+ cgstAmount +'</td>'+
 						'</tr>';
 						}
 						
 						if(sgstAmount > 0){
 						x = x + '<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">SCGST Amount</td>'+
+							'<td colspan="4" class="text-right">SGST Amount</td>'+
 							'<td colspan="1" class="text-left">'+ sgstAmount +'</td>'+
 						'</tr>';
 						}
 						
 						if(igstAmount > 0){
 						x = x + '<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">IGST Amount</td>'+
+							'<td colspan="4" class="text-right">IGST Amount</td>'+
 							'<td colspan="1" class="text-left">'+ igstAmount +'</td>'+
 						'</tr>';
 						}
 						
 						x = x + '<tr class="bg-secondary text-light">'+
-							'<td colspan="5" class="text-right">Grand Amount</td>'+
+							'<td colspan="4" class="text-right">Grand Amount</td>'+
 							'<td colspan="1" class="text-left">'+ payableAmount +'</td>'+
 						'</tr>';  
 				x = x + '</tbody></table>';
@@ -507,14 +505,14 @@
             		}	
             	}
 
-				if($('#contact_no').val() == ''){
-					$('#contact_no').addClass('haveerror');
-					$('#contact_no_error').html('Enter contact No.').show();
-					formvalid = false;
-				} else {
-					$('#contact_no').removeClass('haveerror');
-					$('#contact_no_error').html('').hide();
-				}
+// 				if($('#contact_no').val() == ''){
+// 					$('#contact_no').addClass('haveerror');
+// 					$('#contact_no_error').html('Enter contact No.').show();
+// 					formvalid = false;
+// 				} else {
+// 					$('#contact_no').removeClass('haveerror');
+// 					$('#contact_no_error').html('').hide();
+// 				}
 
 				if($('#gst_no').val() == ''){
 					$('#gst_no').addClass('haveerror');
@@ -619,7 +617,10 @@
                 }
            	});
             
-            
+            $("#billdate").datepicker({
+                //showOn: 'button',
+                dateFormat: 'dd-mm-yy'
+            });
 
             
             

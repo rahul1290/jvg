@@ -11,20 +11,6 @@ class Stock extends CI_Controller {
 		$this->load->library(array('session','form_validation'));
     }
 
-	function index(){
-		if($this->session->userdata('userId') == null){
-			redirect('Auth','refresh');
-		} 
-		$data['stocks'] = $this->Stock_model->list();
-		$data['header'] = $this->load->view('common/header','',true);
-		$data['navbar'] = $this->load->view('common/navbar','',true);
-		$data['footer'] = $this->load->view('common/footer','',true);
-		$data['topbar'] = $this->load->view('common/topbar','',true);
-		$data['copyright'] = $this->load->view('common/copyright','',true);
-		$data['body'] = $this->load->view('pages/stock',$data,true);
-		$this->load->view('layout',$data);
-	}
-	
 	function stock_detail($product_id){
 	    $result = $this->Stock_model->stock_detail($product_id);
 	    if(count($result)>0){
@@ -64,15 +50,25 @@ class Stock extends CI_Controller {
 	                $temp['available_qty'] = $pur['total_qty'] - $sale['total_qty'];
 	            }
 	        }
-	        if($temp['available_qty'] >= $data['quantity']){
+// 	        if($temp['available_qty'] >= $data['quantity']){
 	           $final_array[] = $temp;
 	           $vendors[] = $temp['vendor_id']; 
-	        }
+// 	        }   
 	    }
 	    
 	    if(count($vendors)>0){
     	    $vendors = implode(',',$vendors);
     	    $vendorList = $this->db->query("select * from vendor_master where vendor_id in (". $vendors .")")->result_array();
+    	    
+    	    $c = 0;
+    	    foreach($vendorList as $vl){
+    	        foreach($final_array as $fa){
+    	            if($vl['vendor_id'] == $fa['vendor_id']){
+    	                $vendorList[$c]['availablity'] = $fa['available_qty'];
+    	            }
+    	        }
+    	    $c++;
+    	    }
     	    
     	    if(count($vendorList)>0){
     	        echo json_encode(array('data'=>$vendorList,'status'=>200));

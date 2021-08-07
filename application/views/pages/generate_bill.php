@@ -123,10 +123,19 @@
 										<td colspan="6" style="text-align: right;">Total</td>
 										<td><?php echo $sales_data[0]['grand_total']; ?></td>
 									</tr>
-									<tr>
-										<td colspan="6" style="text-align: right;">Insurance :</td>
-										<td><?php echo $sales_data[0]['insurance']; ?></td>
-									</tr>
+									
+									<?php if($sales_data[0]['insurance'] != '0'){?>
+										<tr>
+    										<td colspan="6" style="text-align: right;">Insurance :</td>
+    										<td><?php echo $sales_data[0]['insurance']; ?></td>
+    									</tr>
+									<?php } ?>
+									<?php if($sales_data[0]['frieght '] != '0'){?>
+										<tr>
+    										<td colspan="6" style="text-align: right;">Frieght :</td>
+    										<td><?php echo $sales_data[0]['frieght']; ?></td>
+    									</tr>
+									<?php } ?>
 									<?php if($sales_data[0]['cgst_amount'] != '0'){?>
 									<tr>
 										<td colspan="6"style="text-align: right;">Add : CGST @ 9.00 %</td>

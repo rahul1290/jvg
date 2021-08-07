@@ -13,9 +13,6 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Page Heading -->
-
-
-
                     <div class="row">
                         <div class="col-lg-12">
                             <!-- Default Card Example -->
@@ -30,19 +27,19 @@
                                     	<label>From Date</label>
                                     	<input type="text" id="from-date" name="from-date" value="<?php echo date('01/01/Y'); ?>"/>
                                     	<label>To Date</label>
-                                    	<input type="text" id="to-date" name="to-date" value="<?php echo date('t/12/Y'); ?>" />
+                                    	<input type="text" id="to-date" name="to-date" value="<?php echo date('d/m/Y'); ?>" />
                                     	<input type="button" value="Search" id="search"/>
                                     </div>
                                     <table class="table table-striped table-bordered" id="purchaseTable">
                                     	<thead>
                                         	<tr>
                                         		<th>SNo.</th>
+                                        		<th>Bill Date</th>
                                         		<th>Buyer Name</th>
                                         		<th>Broker Name</th>
-                                        		<th>Pre Tax Amount</th>
-                                        		<th>Tax Amount</th>
-                                        		<th>Total Amount</th>
-                                        		<th>Bill Date</th>
+<!--                                         		<th>Pre Tax Amount</th> -->
+<!--                                         		<th>Tax Amount</th> -->
+<!--                                         		<th>Total Amount</th> -->
                                         		<th>Action</th>
                                         	</tr>
                                     	</thead>
@@ -110,16 +107,17 @@
             				var x;
             				$.each(response.data,function(key,value){
             					x = x + '<tr>'+
-                    						'<td>'+ parseInt(key + 1) +'</td>'+
+                    						'<td>'+ parseInt(key + 1) +'.</td>'+
+                    						'<td>'+ value.bill_date + '</td>'+
                     						'<td>'+ value.vendor_name +'</td>'+
                     						'<td>'+ value.broker_name +'</td>'+
-                    						'<td>'+ value.product_total_amount +'</td>'+
-                    						'<td>'+(parseFloat((value.product_total_amount * value.cgst)/100) + parseFloat((value.product_total_amount * value.sgst)/100) + parseFloat((value.product_total_amount * value.igst)/100)) + '</td>'+
-                    						'<td>'+ value.grandtotal_amount +'</td>'+
-                    						'<td>'+ value.bill_date + '</td>'+
+//                     						'<td>'+ value.product_total_amount +'</td>'+
+//                     						'<td>'+(parseFloat((value.product_total_amount * value.cgst)/100) + parseFloat((value.product_total_amount * value.sgst)/100) + parseFloat((value.product_total_amount * value.igst)/100)) + '</td>'+
+//                     						'<td>'+ value.grandtotal_amount +'</td>'+
                     						'<td>'+
-                    							//'<input type="button" value="Edit" />'+	
-                    							'<input type="button" data-billid="'+ value.sales_order_id +'" class="view" value="View" />'+
+                    							'<a href="'+ baseUrl+'sales/order/edit/'+value.sales_order_id +'" class="btn-secondary btn-sm">Edit</a>'+	
+                    							'&nbsp; <input type="button" data-billid="'+ value.sales_order_id +'" class="view btn-primary btn-sm" value="View" />'+
+                    							'&nbsp; <input type="button" data-billid="'+ value.sales_order_id +'" class="delete btn-danger btn-sm" value="Delete" />'+
                     							//'<a target="_blank" href="'+ baseUrl +'sales/generate_bill/'+ value.sales_order_id +'" class="btn btn-info btn-sm">PDF</a>'+
                     						'</td>'+
                     					'</tr>';
@@ -161,33 +159,37 @@
         						'<div>Buyer Name : '+ response.data.sale_detail[0].vendor_name +'</div>'+
         						'<div>Broker Name : '+ response.data.sale_detail[0].broker_name +'</div>';
         				
-        				x = x + '<table class="table table-striped table-bordered"><tr class="bg-dark text-light">'+
+        				x = x + '<table class="table table-striped table-bordered text-center"><tr class="bg-dark text-light">'+
         									'<th>S.No.</th>'+
         									'<th>Product Name</th>'+
         									'<th>Quantity</th>'+
-        									'<th>Unit</th>'+
-        									'<th>Total</th>'+
+        									'<th>Rate Per Metric Ton</th>'+
+        									'<th>GST Amount <br/><small>CGST+SGST+IGST</small></th>'+
         								'</tr>'; 		
         				$.each(response.data.bill_detail,function(key,value){
         					x = x + '<tr>'+
-        								'<td>'+ parseInt(parseInt(key) + 1) +'</td>'+
+        								'<td>'+ parseInt(parseInt(key) + 1) +'.</td>'+
         								'<td>'+ value.product_name +'</td>'+
-        								'<td>'+ value.qty +'</td>'+
-        								'<td>'+ value.unit_name +'</td>'+
-        								'<td>'+ value.product_total_amount +'</td>'+
-        							'</tr>';
+        								'<td>'+ value.qty +'<small> ('+ value.unit_name +')</small></td>'+
+        								'<td>'+ value.perunit_price +'</td>';
+        								if(key == 0){
+        								x = x + '<td rowspan="'+ response.data.bill_detail.length +'" valign="middle">'+ 
+        									parseFloat(parseFloat(response.data.sale_detail[0].cgst) + parseFloat(response.data.sale_detail[0].sgst) + parseFloat(response.data.sale_detail[0].igst)) 
+        								+'</td>';
+        								}
+        							x = x + '</tr>';
         				});
-        				x = x + '<tr><td></td><td></td><td></td><td></td><td></td></tr>';
-        				if(response.data.sale_detail[0].cgst != 0){
-        					x = x + '<tr><td colspan="4" class="text-right">CGST</td><td>'+ ((response.data.sale_detail[0].product_total_amount * response.data.sale_detail[0].cgst)/100) +'</td></tr>'; 
-        				}
-        				if(response.data.sale_detail[0].sgst != 0){
-        					x = x + '<tr><td colspan="4" class="text-right">CGST</td><td>'+ ((response.data.sale_detail[0].product_total_amount * response.data.sale_detail[0].sgst)/100) +'</td></tr>'; 
-        				}
-        				if(response.data.sale_detail[0].igst != 0){
-        					x = x + '<tr><td colspan="4" class="text-right">CGST</td><td>'+ ((response.data.sale_detail[0].product_total_amount * response.data.sale_detail[0].igst)/100) +'</td></tr>'; 
-        				}
-        				x = x + '<tr><td colspan="4" class="text-right">Grand Total</td><td>'+ response.data.sale_detail[0].grandtotal_amount  +'</td></tr></table>';
+//         				x = x + '<tr><td></td><td></td><td></td><td></td><td></td></tr>';
+//         				if(response.data.sale_detail[0].cgst != 0){
+//         					x = x + '<tr><td colspan="4" class="text-right">CGST</td><td>'+ ((response.data.sale_detail[0].product_total_amount * response.data.sale_detail[0].cgst)/100) +'</td></tr>'; 
+//         				}
+//         				if(response.data.sale_detail[0].sgst != 0){
+//         					x = x + '<tr><td colspan="4" class="text-right">CGST</td><td>'+ ((response.data.sale_detail[0].product_total_amount * response.data.sale_detail[0].sgst)/100) +'</td></tr>'; 
+//         				}
+//         				if(response.data.sale_detail[0].igst != 0){
+//         					x = x + '<tr><td colspan="4" class="text-right">CGST</td><td>'+ ((response.data.sale_detail[0].product_total_amount * response.data.sale_detail[0].igst)/100) +'</td></tr>'; 
+//         				}
+//         				x = x + '<tr><td colspan="4" class="text-right">Grand Total</td><td>'+ response.data.sale_detail[0].grandtotal_amount  +'</td></tr></table>';
         				
                 					
         				$('#modalBody').html(x);
@@ -198,7 +200,26 @@
         		$('#myModal').modal('show');
         	});
         	
-        	
+        	$(document).on('click','.delete',function(){
+        		var c = confirm('Are you sure.');
+        		if(c){
+        			var billno = $(this).data('billid');
+            		$.ajax({
+            			url : baseUrl+'sales/delete',
+            			type : 'POST',
+            			dataType : 'JSON',
+            			data : {
+            				'bill_no' : billno
+            			},
+            			success : function(response){
+            				if(response.status == 200){
+            					alert(response.msg);
+            					location.reload();
+            				}
+            			}
+            		});
+        		}
+        	});
         	
         	
         	$("#to-date,#from-date").datepicker({

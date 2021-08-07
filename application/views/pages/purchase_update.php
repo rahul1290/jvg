@@ -27,7 +27,7 @@
                                 	<p class="text-center text-danger.Try again..."><?php echo $this->session->flashdata('msg'); ?></p>
                                     <form name="f1" method="POST" action='#'>
                                     	
-                                    	<div class="form-row">
+                                    	<div class="form-row" style="display: none;    ">
                                             <div class="form-group col-md-6">
                                               <label for="inputEmail4">Bill No.<span class="text-danger">*</span></label>
                                               <input type="text" class="form-control form-control-sm" id="billno" name="billno" readonly placeholder="bill no" value="<?php echo $billno;?>">
@@ -56,7 +56,7 @@
                                         </div>
                                         
                                         <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label col-form-label-sm">Contact No.<span class="text-danger">*</span></label>
+                                            <label class="col-sm-2 col-form-label col-form-label-sm">Contact No.</label>
                                             <div class="col-sm-10">
                                             	<input type="text" class="form-control form-control-sm" id="contact_no" name="contact_no" placeholder="Contact No." value="<?php echo $vendor_detail[0]['contact_no']; ?>">
                                             	<div id="contact_no_error" class="text-danger" style="display: none;"></div>
@@ -86,6 +86,19 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
+                                            <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Broker<span class="text-danger">*</span></label>
+                                            <div class="col-sm-10">
+                                            	<select id="broker" class="form-control">
+                                            			<option value="">Select Broker</option>
+                                            		<?php foreach($broker_list as $broker){ ?>
+                                            			<option value="<?php echo $broker['id']; ?>"><?php echo $broker['broker_name']; ?></option>
+                                            		<?php } ?>
+                                            	</select>
+                                            	<div id="broker_error" class="text-danger" style="display: none;"></div>
+												<?php echo form_error('broker'); ?>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
                                             <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Items</label>
                                             <div class="col-sm-10 bg-secondary text-light">
 												<div class="row">
@@ -104,20 +117,21 @@
                                             	<div class="mt-2">
 													<table class="text-light">
 														<tr>
-															<td>Price per unit</td>
+															<td>Rate Per Metric Ton:</td>
 															<td>
 																<input type="number" id="ppu" placeholder="Prie Per Unit"/>
+																<input type="button" value="Add Item" id="add_item" class="btn btn-sm btn-info">
 															</td>
 														</tr>
-														<tr>
+														<!--<tr>
 															<td>Total</td>
 															<td>
 																<input type="text" id="total" readonly placeholder="total" value="0"/>
 															</td>
-														</tr>
+														</tr>-->
 														<tr class="pt-4">
 															<td></td>
-															<td><input type="button" value="Add Item" id="add_item" class="btn btn-info"></td>
+															
 														</tr>
 													</table>
 													
@@ -129,22 +143,46 @@
                                         <div class="form-group row">
                                             <div class="offset-2 col-sm-9">	
                                             	<div class="table-responsive">
+                                            		<table>
+                                                		<tr>
+                                                			<td>CGST</td>
+                                                			<td>
+                                                    			<div class="input-group">
+                                                                  <input type="text" id="cgst_amount" value="" class="form-control" placeholder="CGST amount percentage" aria-label="Recipients username" aria-describedby="basic-addon2">
+                                                                  <div class="input-group-append">
+                                                                    <span class="input-group-text" id="basic-addon2">%</span>
+                                                                  </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>SGST</td>
+                                                			<td>
+                                                    			<div class="input-group">
+                                                                  <input type="text" id="sgst_amount" value="" class="form-control" placeholder="CGST amount percentage" aria-label="Recipients username" aria-describedby="basic-addon2">
+                                                                  <div class="input-group-append">
+                                                                    <span class="input-group-text" id="basic-addon2">%</span>
+                                                                  </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>IGST</td>
+                                                			<td>
+                                                    			<div class="input-group">
+                                                                  <input type="text" id="igst_amount" value="" class="form-control" placeholder="CGST amount percentage" aria-label="Recipients username" aria-describedby="basic-addon2">
+                                                                  <div class="input-group-append">
+                                                                    <span class="input-group-text" id="basic-addon2">%</span>
+                                                                  </div>
+                                                                </div>
+                                                            </td>
+                                                		</tr>
+                                            		</table>
+                                            		<br/>
                                             		<div id="bill_items" style="display: <?php if(count($bill_items)>0){ echo 'inline'; } else { echo 'none'; }?>;"></div>
                                             	</div>
                                             	<table id="total_cal" style="display: <?php if(count($bill_items)>0){ echo 'inline'; } else { echo 'none'; }?>;">
-                                            		<tr>
-                                            			<td>GST Amount</td>
-                                            			<td><input type="text" value="0" id="gst_amount"/></td>
-                                            		</tr>
-                                            		<tr>
-                                            			<td>Discount</td>
-                                            			<td><input type="text" value="0" id="discount_per"/></td>
-                                            		</tr>
+                                            		
                                             	</table>
                                             	
                                             	<br/><br/>
                                             	<input type="button" id="create" class="btn btn-success" value="Update"/>
-                                            	<input type="submit" id="update" style="display: none;" class="btn btn-warning" value="Update"/>
                                             	<input type="reset" id="reset" class="btn btn-secondary" value="Cancel"/>
                                             </div>
                                         </div>
@@ -173,10 +211,23 @@
         $(document).ready( function () {
         	var baseUrl = $('#baseurl').val();
         	var items =[];
-        	$('#gst_amount').val(<?php echo $bill_detail[0]['gst_amount']; ?>);
-        	$('#discount_per').val(<?php echo (($bill_detail[0]['discount'] * 100)/$bill_detail[0]['product_total_amount']); ?>);
+        	
+        	var billDetail = [];
+       		<?php foreach($bill_detail as $item){ ?>
+       			 $('#cgst_amount').val(parseFloat((<?php echo $item['cgst_amount']; ?>*100)/<?php echo $item['product_total_amount']; ?>));
+       			 $('#sgst_amount').val(parseFloat((<?php echo $item['sgst_amount']; ?>*100)/<?php echo $item['product_total_amount']; ?>));
+       			 $('#igst_amount').val(parseFloat((<?php echo $item['igst_amount']; ?>*100)/<?php echo $item['product_total_amount']; ?>));
+        	     $('#broker').val(<?php echo $item['broker_id'];?>);
+        	     
+        	      billDetail.push({'cgst_amount':<?php echo $item['cgst_amount']; ?>,
+	      			  'sgst_amount':<?php echo $item['sgst_amount']; ?>,
+	      			  'igst_amount': <?php echo $item['igst_amount']; ?>,
+	      			  'product_total_amount' : <?php echo $item['product_total_amount']; ?>
+	      			});         
+        	<?php } ?>
+       		
         	<?php foreach($bill_items as $item){ ?>
-        	      items.push({'item':<?php echo $item['product_id']; ?>,
+        	  items.push({'item':<?php echo $item['product_id']; ?>,
         	      			  'itemText':'<?php echo $item['productname']; ?>',
         	      			  'ppu': <?php echo $item['perunit_price']; ?>,
         	      			  'total' : <?php echo $item['perunit_price'] * $item['qty']?>,
@@ -308,7 +359,6 @@
 				
 				if(i) {    
 					items.push(temp);
-					console.log(items);
 				}
 				
 				$('#item,#unit,#ppu,#quantity').val('');
@@ -316,11 +366,7 @@
 							'<thead><tr>'+
 							'<th>sno.</th>'+
 							'<th>Item</th>'+
-							'<th>Quantity</th>'+
-							'<th>Unit</th>'+
-							'<th>PPU</th>'+
-							'<th>Total</th>'+
-							'<th></th>'+	
+							'<th>Quantity</th>'+	
 						'</tr></thead><tbody>';
 				var totalBill = 0;	
 				$.each(items,function(key,value){
@@ -329,39 +375,63 @@
 								'<td>'+ parseInt(key+1) +'</td>'+
 								'<td>'+ value.itemText +'</td>'+
 								'<td>'+ value.qty +'</td>'+
-								'<td>'+ value.unitText +'</td>'+
-								'<td>'+ value.ppu +'</td>'+
-								'<td>'+ value.total +'</td>'+
 								'<td><input type="button" value="del" data-index="'+ key +'" class="btn btn-danger item-del"/></td>'+
 							'</tr>';
 				});
-				var gstAmount = parseFloat($('#gst_amount').val());
-				if(isNaN(gstAmount) || gstAmount == ''){
-					gstAmount = 0;
-				}
-				var discount = (totalBill * parseFloat($('#discount_per').val()))/100;
-				if(isNaN(discount) || discount == ''){
-					discount = 0;
-				}
-				var payableAmount = ((parseFloat(totalBill) + parseFloat(gstAmount)) - parseFloat(discount));
+				var cgstAmount = parseFloat($('#cgst_amount').val());
+				var sgstAmount = parseFloat($('#sgst_amount').val());
+				var igstAmount = parseFloat($('#igst_amount').val());
+				var cgstAmountrs = 0;
+				var sgstAmountrs = 0;
+				var igstAmountrs = 0;
 				
-				x = x + '<tr class="bg-secondary text-light">'+
-							'<td colspan="5">GrandTotal</td>'+
-							'<td colspan="2" class="text-left">'+ totalBill +'</td>'+
+				if(isNaN(cgstAmount) || cgstAmount == ''){
+					cgstAmount = 0;
+				} else{
+					cgstAmountrs = parseFloat((totalBill * $('#cgst_amount').val())/100); 
+				}
+				if(isNaN(sgstAmount) || sgstAmount == ''){
+					sgstAmount = 0;
+				} else {
+					sgstAmountrs = parseFloat((totalBill * $('#sgst_amount').val())/100);
+				}
+				if(isNaN(igstAmount) || igstAmount == ''){
+					igstAmount = 0;
+				} else {
+					igstAmountrs = parseFloat((totalBill * $('#igst_amount').val())/100);
+				}
+				x = x + '<tr class="bg-secondary">'+
+							'<td colspan="3" class="text-right text-light">Grand Total</td>'+
+							'<td class="text-left text-light">'+ totalBill +'</td>'+
+						'</tr>';
+						
+						if(cgstAmount != 0){
+    						x = x + '<tr class="bg-secondary">'+
+    							'<td colspan="3" class="text-right text-light">CGST Amount</td>'+
+    							'<td class="text-left text-light">'+ parseFloat((totalBill * $('#cgst_amount').val())/100) +'</td>'+
+    						'</tr>';
+						}
+						
+						if(sgstAmount != 0){
+						x = x + '<tr class="bg-secondary">'+
+							'<td colspan="3" class="text-right text-light">SGST Amount</td>'+
+							'<td class="text-left text-light">'+ parseFloat((totalBill * $('#sgst_amount').val())/100) +'</td>'+
+						'</tr>';
+						} 
+						
+						if(igstAmount != 0){
+						x = x + '<tr class="bg-secondary">'+
+							'<td colspan="3" class="text-right text-light">IGST Amount</td>'+
+							'<td class="text-left text-light">'+ parseFloat((totalBill * $('#igst_amount').val())/100) +'</td>'+
+						'</tr>';
+						} 
+						x = x + '<tr class="bg-secondary">'+
+							'<td colspan="3" class="text-right text-light">Payble Amount</td>'+
+							'<td class="text-left text-light">'+
+								parseFloat(parseFloat(totalBill + cgstAmountrs) + parseFloat(sgstAmountrs + igstAmountrs))
+							+'</td>'+
 						'</tr>'+
-						'<tr class="bg-secondary text-light">'+
-							'<td colspan="5">GST Amount</td>'+
-							'<td colspan="2" class="text-left">'+ gstAmount +'</td>'+
-						'</tr>'+
-						'<tr class="bg-secondary text-light">'+
-							'<td colspan="5">Discount</td>'+
-							'<td colspan="2" class="text-left">'+ discount +'</td>'+
-						'</tr>'+
-						'<tr class="bg-secondary text-light">'+
-							'<td colspan="5">Payable Amount</td>'+
-							'<td colspan="2" class="text-left">'+ payableAmount +'</td>'+
-						'</tr>';  
-				x = x + '</tbody></table>';
+				'</tbody></table>';
 				
 				if(items.length){
 					$('#bill_items').html(x).show();	
@@ -372,8 +442,6 @@
 				}
 
 				$('#total').val(0);
-				$('#item_gst').val(0);
-				$('#item_discount').val(0);
 				$('#item_grand_total').val(0);
 			}
             
@@ -384,6 +452,9 @@
             	billPreview(0);
             });
 
+			$(document).on('keyup','#cgst_amount',function(){
+				billPreview(0);
+			});
 
         	$(document).on('change','#seller_id',function(){
             	var sellerId = $(this).val();
@@ -451,6 +522,15 @@
             		$('#seller_id_error').html('').show();
             	}
             	
+            	if($('#broker').val() == ''){
+            		$('#broker').addClass('haveerror');
+            		$('#broker_error').html('please select broker').show();
+            		formvalid = false;
+            	} else {
+            		$('#broker').removeClass('haveerror');
+            		$('#broker_error').html('').show();
+            	}
+            	
             	if($('#seller_id').val() == 'oth'){
             		if($('#other_vendor').val() == ''){
             			$('#other_vendor').addClass('haveerror');
@@ -462,14 +542,14 @@
             		}	
             	}
 
-				if($('#contact_no').val() == ''){
-					$('#contact_no').addClass('haveerror');
-					$('#contact_no_error').html('Enter contact No.').show();
-					formvalid = false;
-				} else {
-					$('#contact_no').removeClass('haveerror');
-					$('#contact_no_error').html('').hide();
-				}
+// 				if($('#contact_no').val() == ''){
+// 					$('#contact_no').addClass('haveerror');
+// 					$('#contact_no_error').html('Enter contact No.').show();
+// 					formvalid = false;
+// 				} else {
+// 					$('#contact_no').removeClass('haveerror');
+// 					$('#contact_no_error').html('').hide();
+// 				}
 
 				if($('#gst_no').val() == ''){
 					$('#gst_no').addClass('haveerror');
@@ -504,12 +584,14 @@
 						url : baseUrl + 'Purchase/bill_update',
 						data : {
 							'items': items,
-							'get_amount' : $('#gst_amount').val(),
-							'discount_per' : $('#discount_per').val(),
+							'cgst_amount' : $('#cgst_amount').val(),
+							'sgst_amount' : $('#sgst_amount').val(),
+							'igst_amount' : $('#igst_amount').val(),
 							'bill_no' : $('#billno').val(),
 							'other_vendor' : $('#other_vendor').val(),
 							'billdate' : $('#billdate').val(),
 							'seller_id' : $('#seller_id').val(),
+							'broker_id' : $('#broker').val(),
 							'contact_no' : $('#contact_no').val(),
 							'alternet_contact' : $('#alternet_contact').val(),
 							'gst_no' : $('#gst_no').val(),
@@ -597,7 +679,8 @@
             $("#gst_amount").keypress(function (e) {
                  if (e.which != 8 && e.which != 0 && (e.which < 46 || e.which > 57)) {
                  	$("#errmsg").html("Digits Only").show().fadeOut("slow");
-                    	return false
+                    	return false;
+                   }
            	});
             
             

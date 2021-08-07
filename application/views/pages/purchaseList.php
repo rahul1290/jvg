@@ -38,7 +38,7 @@
                                         	<tr>
                                         		<th>SNo.</th>
                                         		<th>Bill Date</th>
-                                        		<th>Vendor Name</th>
+                                        		<th>Seller Name</th>
                                         		<th>Broker Name</th>
 <!--                                         		<th>Pre Tax Amount</th> -->
 <!--                                         		<th>Tax Amount</th> -->
@@ -115,12 +115,12 @@
                     						'<td>'+ value.broker_name + '</td>'+
 //                     						'<td>'+ indrupee_format(value.product_total_amount) +'</td>'+
 //                     						'<td>'+ indrupee_format(value.gst_amount) +'</td>'+
-//                     						'<td>'+ indrupee_format(value.grandtotal_amount) + '</td>'+
+//                     						'<td>'+ indrupee_format(parseFloat(value.grandtotal_amount)) + '</td>'+
                     						
                     						'<td>'+	
-                    							//'<a href="'+ baseUrl+'purchase/bill_entry_update/'+value.purchase_id +'" class="btn btn-secondary btn-sm">Edit</a>'+
-                    							'<input type="button" data-billid="'+ value.purchase_id +'" class="view btn btn-primary btn-sm" value="View"/>'+
-                    							//'&nbsp;<a target="_blank" href="'+ baseUrl+'purchase/purchase_pdf/'+value.purchase_id +'" class="btn btn-info btn-sm">PDF</a>'+
+                    							'<a href="'+ baseUrl+'purchase/edit/'+value.purchase_id +'" class="btn-secondary btn-sm">Edit</a>'+
+                    							'&nbsp; <input type="button" data-billid="'+ value.purchase_id +'" class="view btn-primary btn-sm" value="View"/>'+
+                    							'&nbsp; <input type="button" data-billid="'+ value.purchase_id +'" class="delete btn-danger btn-sm" value="Delete"/>'+
                     						'</td>'+
                     					'</tr>';
             				});
@@ -158,7 +158,7 @@
         			success : function(response){
         				console.log(response)
         				$('#modalTitle').html('<p style="line-height:10px;"><span class="text-primary">Bill Date </span>: '+ response.data.billdetail[0].bill_date +'</p>'+
-        									  '<p style="line-height:7px;"><span class="text-primary">Vendor Name </span>:'+ response.data.billdetail[0].vendor_name +'</p>'+
+        									  '<p style="line-height:7px;"><span class="text-primary">Seller Name </span>:'+ response.data.billdetail[0].vendor_name +'</p>'+
         									  '<p style="line-height:7px;"><span class="text-primary">Broker Name </span>:'+ response.data.billdetail[0].broker_name +'</p>');
         				var x = '<table class="table table-bordered text-center"><tr class="bg-dark text-light">'+
         								'<th>Sno.</th>'+
@@ -175,7 +175,9 @@
         								'<td>'+ value.qty +'<small> ('+ value.unitname +')</small></td>'+
         								'<td>'+ value.perunit_price +'</td>';
         								if(key == 0){
-        									x = x + '<td rowspan="'+ response.data.items.length +'">'+ indrupee_format(value.product_total_amount) +'</td>';
+        									x = x + '<td rowspan="'+ response.data.items.length +'">'+ 
+        										indrupee_format(parseFloat(response.data.billdetail[0]['cgst_amount']) + parseFloat(response.data.billdetail[0]['sgst_amount']) + parseFloat(response.data.billdetail[0]['igst_amount'])) 
+        									+'</td>';
         								}
         							x = x + '</tr>';
         				});
@@ -200,6 +202,28 @@
     			});
         			
         		$('#myModal').modal('show');
+        	});
+        	
+        	
+        	$(document).on('click','.delete',function(){
+        		var c = confirm('Are you sure.');
+        		if(c){
+        			var billno = $(this).data('billid');
+            		$.ajax({
+            			url : baseUrl+'purchase/purchase_bill_delete/',
+            			type : 'POST',
+            			dataType : 'JSON',
+            			data : {
+            				'bill_no' : billno
+            			},
+            			success : function(response){
+            				if(response.status == 200){
+            					alert(response.msg);
+            					location.reload();
+            				}
+            			}
+            		});
+        		}
         	});
         	
         	$("#to-date,#from-date").datepicker({

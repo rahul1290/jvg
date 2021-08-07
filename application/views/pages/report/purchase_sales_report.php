@@ -1,4 +1,4 @@
-	<body id="page-top">
+<body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
@@ -16,12 +16,21 @@
 
 
 
-                    <div class="row">
-                        <div class="offset-2 col-lg-8">
+                    <div class="">
+                        <div class="">
                             <!-- Default Card Example -->
                             <div class="card mb-4">
                                 <div class="card-header text-center text-light bg-secondary">
-                                    VENDOR REPORT
+                                    PURCHASE / SALES ORDER REPORT
+                                    <span class="float-right">	
+                                    	<label>Select Broker</label>
+                                    	<select id="broker">
+                                    		<option value="">--All--</option>
+                                    		<?php foreach($brokerList as $broker){?>
+                                    			<option value="<?php echo $broker['id']; ?>" <?php if($this->uri->segment(3) == $broker['id']){ echo 'selected'; }?>><?php echo $broker['broker_name']; ?></option>
+                                    		<?php }?>
+                                    	</select>
+                                    </span>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -29,20 +38,28 @@
                                             <thead>
                                             	<tr class="text-center">
                                                     <th>S.No.</th>
-                                                    <th>Vendor Name</th>
-                                                    <th>Product Name</th>
-                                                    <th>Available Stock</th>
+                                                    <th>Date</th>
+                                                    <th>InventoryType</th>
+                                                    <th>VendorName</th>
+                                                    <th>ProductName</th>
+                                                    <th>Qty</th>
+                                                    <th>Rate</th>
+                                                    <th>BrokerName</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                             	<?php
                                             	$c = 0;
-                                            	foreach($report_data as $data){ ?>
+                                            	foreach($records as $record){ ?>
                                                     <tr class="text-center">
                                                         <td><?php echo ++$c;?>.</td>
-                                                        <td><?php echo $data['vendor_name']; ?></td>
-                                                        <td><?php echo $data['product_name']; ?></td>
-                                                        <td><b><?php echo $data['available']; ?></b> <small>(<?php echo $data['unit_name']; ?>)</small></td>
+                                                        <td><?php echo $record['bill_date']; ?></td>
+                                                        <td><?php echo $record['Purchase']; ?></td>
+                                                        <td><?php echo $record['vendor_name']; ?></td>
+                                                        <td><?php echo $record['product_name']; ?></td>
+                                                        <td><?php echo $record['qty']; ?></td>
+                                                        <td><?php echo $record['perunit_price']; ?></td>
+                                                        <td><?php echo $record['broker_name']; ?></td>
                                                     </tr>
                                                 <?php } ?>
                                             </tbody>
@@ -147,6 +164,16 @@
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ]
+            });
+            
+            $(document).on('change','#broker',function(){
+            	var brokerId = $(this).val();
+            	
+            	if(brokerId == ''){
+            		window.location.href = baseUrl + 'report/prchase-n-sales';
+            	} else {
+            		window.location.href = baseUrl + 'report/prchase-n-sales/'+ brokerId;
+            	}
             });
         });
     </script>

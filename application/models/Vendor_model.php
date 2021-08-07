@@ -67,8 +67,8 @@ class Vendor_model extends CI_Model{
                 } else {
                     continue;
                 }
-                $final_array[] = $temp;
             }
+            $final_array[] = $temp;
         }
         
         return $final_array;

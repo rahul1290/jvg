@@ -30,18 +30,18 @@
                                     	<label>From Date</label>
                                     	<input type="text" id="from-date" name="from-date" value="<?php echo date('01/01/Y'); ?>"/>
                                     	<label>To Date</label>
-                                    	<input type="text" id="to-date" name="to-date" value="<?php echo date('t/12/Y'); ?>" />
+                                    	<input type="text" id="to-date" name="to-date" value="<?php echo date('d/m/Y'); ?>" />
                                     	<input type="button" value="Search" id="search"/>
                                     </div>
                                     <table class="table table-striped table-bordered" id="purchaseTable">
                                     	<thead>
                                         	<tr>
                                         		<th>SNo.</th>
-                                        		<th>Buyer Name</th>
-                                        		<th>Broker Name</th>
-                                        		<th>Tax Amount</th>
-                                        		<th>Total Amount</th>
                                         		<th>Bill Date</th>
+                                        		<th>Buyer Name</th>
+<!--                                        		<th>Broker Name</th>
+                                        		<th>Tax Amount</th> -->
+                                        		<th>Total Amount</th>
                                         		<th>Action</th>
                                         	</tr>
                                     	</thead>
@@ -110,11 +110,12 @@
             				$.each(response.data,function(key,value){
             					x = x + '<tr>'+
                     						'<td>'+ parseInt(key + 1) +'</td>'+
-                    						'<td>'+ value.vendor_name +'</td>'+
-                    						'<td>'+ value.broker_name +'</td>'+
-                    						'<td>'+ value.total_tax_amount +'</td>'+
-                    						'<td>'+ value.grand_total +'</td>'+
                     						'<td>'+ value.invoice_date + '</td>'+
+                    						'<td>'+ value.vendor_name +'</td>'+
+                    						//'<td>'+ value.broker_name +'</td>'+
+                    						//'<td>'+ value.total_tax_amount +'</td>'+
+                    						'<td>'+ value.grand_total +'</td>'+
+                    						
                     						'<td>'+
                     							//'<input type="button" value="Edit" />'+	
                     							'<input type="button" data-billid="'+ value.sales_id +'" class="view" value="View" />'+
@@ -250,14 +251,26 @@
 															'<td>'+ value.sales_product_amount +'</td>'+
 														'</tr>';
 														});
+														
 														x = x + '<tr>'+
 															'<td colspan="6" class="text-right">Total</td>'+
 															'<td>'+ response.data.sale_detail[0].grand_total +'</td>'+
-														'</tr>'+
-														'<tr>'+
+														'</tr>';
+														
+														if(response.data.sale_detail[0].insurance != '0'){
+														x = x + '<tr>'+
 															'<td colspan="6" class="text-right">Insurance :</td>'+
 															'<td>'+ response.data.sale_detail[0].insurance +'</td>'+
 														'</tr>';
+														}
+														
+														if(response.data.sale_detail[0].frieght != '0'){
+														x = x + '<tr>'+
+															'<td colspan="6" class="text-right">frieght :</td>'+
+															'<td>'+ response.data.sale_detail[0].frieght +'</td>'+
+														'</tr>';
+														}
+														
 														if(response.data.sale_detail[0].cgst_amount != 0){
     														x = x + '<tr>'+
     															'<td colspan="6" class="text-right">Add : CGST @ 9.00 %</td>'+
@@ -295,7 +308,7 @@
 														'</tr>'+
 														'<tr>'+
 															'<td>9%&nbsp;&nbsp;</td>'+
-															'<td>'+ response.data.sale_detail[0].grand_total +'&nbsp;&nbsp;</td>'+
+															'<td>'+ parseFloat(parseFloat(response.data.sale_detail[0].grand_total) + parseFloat(response.data.sale_detail[0].insurance))  +'&nbsp;&nbsp;</td>'+
 															'<td>'+ response.data.sale_detail[0].cgst_amount +'&nbsp;&nbsp;</td>'+
 															'<td>'+ response.data.sale_detail[0].sgst_amount +'&nbsp;&nbsp;</td>'+
 															'<td>'+ response.data.sale_detail[0].total_tax_amount +'&nbsp;&nbsp;</td>'+	

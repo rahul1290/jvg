@@ -1,4 +1,4 @@
-	<body id="page-top">
+<body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
@@ -16,12 +16,12 @@
 
 
 
-                    <div class="row">
-                        <div class="offset-2 col-lg-8">
+                    <div class="">
+                        <div class="">
                             <!-- Default Card Example -->
                             <div class="card mb-4">
                                 <div class="card-header text-center text-light bg-secondary">
-                                    VENDOR REPORT
+                                    VENDOR WISE PRODUCT STOCK
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -30,19 +30,21 @@
                                             	<tr class="text-center">
                                                     <th>S.No.</th>
                                                     <th>Vendor Name</th>
-                                                    <th>Product Name</th>
-                                                    <th>Available Stock</th>
+                                                    <th>Product code</th>
+                                                    <th>Product name</th>
+                                                    <th>availableStock</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                             	<?php
                                             	$c = 0;
-                                            	foreach($report_data as $data){ ?>
+                                            	foreach($records as $record){ ?>
                                                     <tr class="text-center">
                                                         <td><?php echo ++$c;?>.</td>
-                                                        <td><?php echo $data['vendor_name']; ?></td>
-                                                        <td><?php echo $data['product_name']; ?></td>
-                                                        <td><b><?php echo $data['available']; ?></b> <small>(<?php echo $data['unit_name']; ?>)</small></td>
+                                                        <td><?php echo $record['vendor_name']; ?></td>
+                                                        <td><?php echo $record['code']; ?></td>
+                                                        <td><?php echo $record['product_name']; ?></td>
+                                                        <td><?php echo $record['qty']; ?></td>
                                                     </tr>
                                                 <?php } ?>
                                             </tbody>

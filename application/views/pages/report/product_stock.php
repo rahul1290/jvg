@@ -1,4 +1,4 @@
-	<body id="page-top">
+<body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
@@ -21,7 +21,7 @@
                             <!-- Default Card Example -->
                             <div class="card mb-4">
                                 <div class="card-header text-center text-light bg-secondary">
-                                    VENDOR REPORT
+                                    PRODUCT STOCK LIST
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -29,7 +29,7 @@
                                             <thead>
                                             	<tr class="text-center">
                                                     <th>S.No.</th>
-                                                    <th>Vendor Name</th>
+                                                    <th>Product Code</th>
                                                     <th>Product Name</th>
                                                     <th>Available Stock</th>
                                                 </tr>
@@ -37,12 +37,12 @@
                                             <tbody>
                                             	<?php
                                             	$c = 0;
-                                            	foreach($report_data as $data){ ?>
+                                            	foreach($stocks as $stock){ ?>
                                                     <tr class="text-center">
                                                         <td><?php echo ++$c;?>.</td>
-                                                        <td><?php echo $data['vendor_name']; ?></td>
-                                                        <td><?php echo $data['product_name']; ?></td>
-                                                        <td><b><?php echo $data['available']; ?></b> <small>(<?php echo $data['unit_name']; ?>)</small></td>
+                                                        <td><?php echo $stock['code']; ?></td>
+                                                        <td><?php echo $stock['name']; ?></td>
+                                                        <td><?php echo $stock['available']; ?></td>
                                                     </tr>
                                                 <?php } ?>
                                             </tbody>

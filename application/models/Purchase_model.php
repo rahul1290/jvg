@@ -18,12 +18,13 @@ class Purchase_model extends CI_Model{
             'product_total_amount' => $data['product_total_amount'],
             'purchase_date' => $data['purchase_date'],
             'discount' => $data['discount'],
-            'gst_amount' => $data['gst_amount'],
+            'cgst_amount' => $data['cgst_amount'],
+            'sgst_amount' => $data['sgst_amount'],
+            'igst_amount' => $data['igst_amount'],
             'grandtotal_amount' => $data['grandtotal_amount'],
             'created_at' => $data['created_at'],
             'created_by' => $data['created_by']
         ));
-        
         $this->db->select('*');
         $result = $this->db->get_where('purchase',array('purchase_id'=>$data['bill_id'],'status'=>1))->result_array();
         return $result[0]['purchase_id'];

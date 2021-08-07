@@ -84,7 +84,7 @@ class Purchase extends CI_Controller {
 	        $igst_amount = $this->input->post('igst_amount');
 	    }
 	    
-	    $purchaseData['bill_date'] = date("Y-m-d", strtotime($this->input->post('billdate')));
+	    $purchaseData['bill_date'] = date("Y-m-d H:i:s", strtotime($this->input->post('billdate'))).' '.date('H:i:s');
 	    $purchaseData['vendor_id'] = $seller_id;
 	    $purchaseData['broker_id'] = $this->input->post('broker_id');
 	    $purchaseData['product_total_amount'] = $product_total_amount;
@@ -161,7 +161,7 @@ class Purchase extends CI_Controller {
 	
 	function bill_update(){
 	    $seller_id = $this->input->post('seller_id');
-	    $bill_id = $this->input->post('bill_id');
+	    $bill_id = $this->input->post('bill_no');
 	    
 	    if($this->input->post('seller_id') == 'oth'){
 	        $data['vendor_name'] = $this->input->post('other_vendor');
@@ -185,15 +185,18 @@ class Purchase extends CI_Controller {
 	    }
 	    $purchaseData['broker_id'] = $this->input->post('broker_id');
 	    $purchaseData['bill_id'] = $bill_id;
-	    $purchaseData['bill_date'] = date("Y-m-d", strtotime($this->input->post('billdate')));
+	    $purchaseData['bill_date'] = date("Y-m-d", strtotime($this->input->post('billdate'))).' '.date('H:i:s');
 	    $purchaseData['vendor_id'] = $seller_id;
 	    $purchaseData['product_total_amount'] = $product_total_amount;
 	    $purchaseData['purchase_date'] = date("Y-m-d", strtotime($this->input->post('billdate')));
-	    $purchaseData['discount'] = ($product_total_amount * $this->input->post('discount_per'))/100;
-	    $purchaseData['gst_amount'] = $this->input->post('get_amount');
-	    $purchaseData['grandtotal_amount'] = (($product_total_amount + $purchaseData['gst_amount']) - $purchaseData['discount']);
+	    $purchaseData['cgst_amount'] = ($product_total_amount * $this->input->post('cgst_amount'))/100;
+	    $purchaseData['sgst_amount'] = ($product_total_amount * $this->input->post('sgst_amount'))/100;
+	    $purchaseData['igst_amount'] = ($product_total_amount * $this->input->post('igst_amount'))/100;
+	    $purchaseData['discount'] = 0;
+	    $purchaseData['grandtotal_amount'] = ($product_total_amount + $purchaseData['cgst_amount'] + $purchaseData['sgst_amount'] + $purchaseData['igst_amount']);
 	    $purchaseData['created_at'] = date('Y-m-d H:i:s');
 	    $purchaseData['created_by'] = $this->session->userdata('userId');
+	   
 	    
 	    $this->db->trans_begin();
 	    
@@ -205,10 +208,9 @@ class Purchase extends CI_Controller {
 	        $temp['product_id'] = $item['item'];
 	        $temp['unit_id'] = $item['unit'];
 	        $temp['qty'] = $item['qty'];
+	        $temp['perunit_price'] = $item['ppu'];
 	        $temp['product_total_amount'] = $item['total'];
-	        $itemTableData[] = $temp;
-	        
-	        $this->Stock_model->stock_entry($item);
+	        $itemTableData[] = $temp;   
 	    }
 	    $this->Purchase_model->itemUpdate($itemTableData);
 	    
@@ -307,5 +309,13 @@ class Purchase extends CI_Controller {
 	    $data['copyright'] = $this->load->view('common/copyright','',true);
 	    $data['body'] = $this->load->view('report/purchase_order',$data,true);
 	    $this->load->view('layout',$data);
+	}
+	
+	function purchase_bill_delete(){
+	    $billno = $this->input->post('bill_no');
+	    
+	    $this->db->where('purchase_id',$billno);
+	    $this->db->update('purchase',array('status'=>0));
+	    echo json_encode(array('msg'=>'Record deleted successfully.','status'=>200));
 	}
 }

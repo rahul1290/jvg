@@ -121,7 +121,7 @@
                 Report
             </div>
 
-			
+			<?php /*
 			<li class="nav-item">
                 <a class="nav-link <?php echo $this->uri->segment(1) == 'report'? '':'collapsed'; ?>" href="#" data-toggle="collapse" data-target="#collapsesix"
                     aria-expanded="true" aria-controls="collapsesix">
@@ -144,23 +144,40 @@
                     </div>
                 </div>
             </li>
+            */ ?>
 			
             <!-- Nav Item - Charts -->
-            <li class="nav-item <?php if($this->uri->segment(1) == 'Dashboard' || $this->uri->segment(1) == 'stock'){
+            <li class="nav-item <?php if($this->uri->segment(1) == 'Dashboard' || ($this->uri->segment(1) == 'report' && $this->uri->segment(2) == 'product-stock')){
                 echo "active";
             }?>">
-                <a class="nav-link" href="<?php echo base_url('stock');?>">
+                <a class="nav-link" href="<?php echo base_url('report/product-stock');?>">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Product Report</span></a>
+                    <span>Product Stock Report</span></a>
             </li>
-            <li class="nav-item <?php if($this->uri->segment(1) == 'report' && $this->uri->segment(2) == 'vendor'){
+            
+            <li class="nav-item <?php if($this->uri->segment(1) == 'report' && $this->uri->segment(2) == 'prchase-n-sales'){
                 echo "active";
             }?>">
-                <a class="nav-link" href="<?php echo base_url('report/vendor');?>">
+                <a class="nav-link" href="<?php echo base_url('report/prchase-n-sales');?>">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Vendor Report</span></a>
+                    <span>Purchase / Sales Report</span></a>
             </li>
-
+            
+            <li class="nav-item <?php if($this->uri->segment(1) == 'report' && $this->uri->segment(2) == 'vendor-prchase-n-sales'){
+                echo "active";
+            }?>">
+                <a class="nav-link" href="<?php echo base_url('report/vendor-prchase-n-sales');?>">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Vendor wise Purchase / Sales Report</span></a>
+            </li>
+            
+            <li class="nav-item <?php if($this->uri->segment(1) == 'report' && $this->uri->segment(2) == 'vendor-report'){
+                echo "active";
+            }?>">
+                <a class="nav-link" href="<?php echo base_url('report/vendor-report');?>">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Vendor wise product stock report</span></a>
+            </li>
             
         </ul>
         <!-- End of Sidebar -->

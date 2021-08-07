@@ -32,14 +32,6 @@ class Stock_model extends CI_Model{
         return true;
     }
     
-    function list(){
-        $this->db->select('p.product_id,p.name as productname,u.name as unitname,s.qty');
-        $this->db->join('products p','p.product_id = s.product_id');
-        $this->db->join('unit u','u.unit_id = p.unit_id');
-        $result = $this->db->get_where('stock_master s',array('s.status'=>1))->result_array();
-        
-        return $result;
-    }
     
     function stock_detail($product_id){
         $this->db->select('*');

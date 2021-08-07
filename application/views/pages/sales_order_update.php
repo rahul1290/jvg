@@ -13,6 +13,7 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Page Heading -->
+
                     <div class="row">
                         <div class="col-lg-12">
                             <!-- Default Card Example -->
@@ -25,7 +26,7 @@
                                     <form name="f1" method="POST" action='#'>
                                     	
                                         <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label col-form-label-sm">Purchase Date<span class="text-danger">*</span></label>
+                                            <label class="col-sm-2 col-form-label col-form-label-sm">Sales Date<span class="text-danger">*</span></label>
                                             <div class="col-sm-10">
                                             	<input type="text" class="form-control form-control-sm" id="billdate" name="billdate" placeholder="Date" value="<?php echo date('d-m-Y');?>">
                                             	<div id="billdate_error" class="text-danger" style="display: none;"></div>
@@ -33,12 +34,16 @@
                                         </div>  
                                     	
                                         <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label col-form-label-sm">Seller<span class="text-danger">*</span></label>
+                                            <label class="col-sm-2 col-form-label col-form-label-sm">Buyer<span class="text-danger">*</span></label>
                                             <div class="col-sm-10">
                                             	<select id="seller_id" class="form-control">
-                                            		<option value="">Select seller</option>
-                                            		<?php foreach($vendor_list as $vendor){ ?>
-                                            			<option value="<?php echo $vendor['vendor_id']; ?>"><?php echo $vendor['vendor_name']; ?></option>
+                                            		<option value="">Select Buyer</option>
+                                            		<?php foreach($vendor_list as $vendor){
+                                            		    if($vendor['vendor_id'] == $orderDetail[0]['vendor_id']){ ?>
+                                            		        <option value="<?php echo $vendor['vendor_id']; ?>" selected><?php echo $vendor['vendor_name']; ?></option>
+                                            		    <?php } else { ?>
+                                            		    	<option value="<?php echo $vendor['vendor_id']; ?>"><?php echo $vendor['vendor_name']; ?></option>    
+                                            		    <?php } ?>
                                             		<?php } ?>
                                             		<option value="oth">Other</option>
                                             	</select>
@@ -83,8 +88,12 @@
                                             <div class="col-sm-10">
                                             	<select id="broker_id" class="form-control">
                                             		<option value="">Select Broker</option>
-                                            		<?php foreach($broker_list as $broker){ ?>
-                                            			<option value="<?php echo $broker['id']; ?>"><?php echo $broker['broker_name']; ?></option>
+                                            		<?php foreach($broker_list as $broker){
+                                            		    if($broker['id'] == $orderDetail[0]['broker_id']){ ?>
+                                            		        <option value="<?php echo $broker['id']; ?>" selected><?php echo $broker['broker_name']; ?></option>
+                                            		    <?php } else { ?>
+                                            		    	<option value="<?php echo $broker['id']; ?>"><?php echo $broker['broker_name']; ?></option>    
+                                            		    <?php } ?>
                                             		<?php } ?>
                                             	</select>
                                             	<input class="mt-1" style="display:none;" id="other_vendor" type="text" placeholder="Enter vendor name"/>
@@ -111,18 +120,19 @@
                                             	<div class="mt-2 pb-1">
 													<table class="text-light">
 														<tr>
-															<td>Rate Per Metric Ton:</td>
+															<td>Rate Per Metric Ton :</td>
 															<td>
-																<input type="text" id="ppu" placeholder="Rate Per Metric Ton" value="0"/>
+																<input type="text" id="ppu" placeholder="Rate per metric ton" value="0"/>
 															</td>
-															<td></td>
 															<td><input type="button" value="Add Item" id="add_item" class="btn btn-sm btn-info"></td>
 														</tr>
-														<tr style="display: none;">
-															<td>Total:</td>
-															<td>
-																<input type="text" id="total" readonly placeholder="total" value="0"/>
+														<tr>
+															<td style="display:none;">Total :</td>
+															<td style="display:none;">
+																<input type="text" id="total" placeholder="total" readonly value="0"/>
 															</td>
+															<td></td>
+															<!--  <td><input type="button" value="Add Item" id="add_item" class="btn btn-sm btn-info"></td> -->
 														</tr>
 													</table>
 												</div>
@@ -133,51 +143,43 @@
                                         <hr/>
                                         <div class="form-group row">
                                             <div class="offset-2 col-sm-9">	
+                                            	<table id="total_cal" class="mb-2" style="display: none;">
+                                            		<tr>
+                                            			<td>CGST</td>
+                                            			<td>
+                                            				<div class="input-group">
+                                                              <input type="text" id="cgst_amount" value="0" class="form-control" placeholder="CGST amount percentage" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                                              <div class="input-group-append">
+                                                                <span class="input-group-text" id="basic-addon2">%</span>
+                                                              </div>
+                                                            </div>
+                                            			</td>
+                                            			
+                                            			<td>SGST</td>
+                                            			<td>
+                                            				<div class="input-group">
+                                                              <input type="text" id="sgst_amount" value="0" class="form-control" placeholder="SGST amount percentage" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                                              <div class="input-group-append">
+                                                                <span class="input-group-text" id="basic-addon2">%</span>
+                                                              </div>
+                                                            </div>
+                                            			</td>
+                                            			<td>IGST</td>
+                                            			<td>
+                                            				<div class="input-group">
+                                                              <input type="text" id="igst_amount" value="0" class="form-control" placeholder="ICGST amount percentage" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                                              <div class="input-group-append">
+                                                                <span class="input-group-text" id="basic-addon2">%</span>
+                                                              </div>
+                                                            </div>
+                                            			</td>
+                                            		</tr>
+                                            	</table>
                                             	<div class="table-responsive">
-                                            		<table id="total_cal" class="mb-2" style="display: none;">
-                                                		<tr>
-                                                			<td>CGST</td>
-                                                			<td>
-                                                				<div class="input-group">
-                                                                  <input type="text" id="cgst_amount" value="0" class="form-control" placeholder="CGST amount percentage" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                                                  <div class="input-group-append">
-                                                                    <span class="input-group-text" id="basic-addon2">%</span>
-                                                                  </div>
-                                                                </div>
-                                                			</td>
-                                                			
-                                                			<td>SGST</td>
-                                                			<td>
-                                                				<div class="input-group">
-                                                                  <input type="text" id="sgst_amount" value="0" class="form-control" placeholder="SGST amount percentage" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                                                  <div class="input-group-append">
-                                                                    <span class="input-group-text" id="basic-addon2">%</span>
-                                                                  </div>
-                                                                </div>
-                                                			</td>
-                                                			<td>IGST</td>
-                                                			<td>
-                                                				<div class="input-group">
-                                                                  <input type="text" id="igst_amount" value="0" class="form-control" placeholder="ICGST amount percentage" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                                                  <div class="input-group-append">
-                                                                    <span class="input-group-text" id="basic-addon2">%</span>
-                                                                  </div>
-                                                                </div>
-                                                			</td>
-                                                		</tr>
-                                                	</table>
                                             		<div id="bill_items" style="display: none;"></div>
                                             	</div>
-                                            	<!-- <table id="total_cal" style="display: none;"> -->
-<!--                                             		<tr> -->
-<!--                                             			<td>GST Amount</td> -->
-<!--                                             			<td><input type="text" value="0" id="gst_amount"/></td> -->
-<!--                                             		</tr> -->
-<!--                                             	</table> -->
-                                            	
-                                            	<br/>
-                                            	<input type="button" id="create" class="btn btn-success" value="Purchase"/>
-                                            	<input type="submit" id="update" style="display: none;" class="btn btn-warning" value="Update"/>
+                                            	</br>
+                                            	<input type="submit" id="create" class="btn btn-warning" value="Update"/>
                                             	<input type="reset" id="reset" class="btn btn-secondary" value="Cancel"/>
                                             </div>
                                         </div>
@@ -203,9 +205,69 @@
     <!-- End of Page Wrapper -->
 
     <script>
+    
         $(document).ready( function () {
         	var baseUrl = $('#baseurl').val();
         	var items = [];
+        	
+        	<?php foreach($orderItems as $oi){ ?>
+        		items.push(
+        		{'item': '<?php echo $oi['product_id']; ?>',
+				'itemText': '<?php echo $oi['product_name']; ?>',
+				'unit' : '<?php echo $oi['unit_id']; ?>',
+				'unitText' : '<?php echo $oi['unit_name']; ?>',
+				'qty' : '<?php echo $oi['qty']; ?>',
+				'total' : '<?php echo $oi['product_total_amount']; ?>',
+				'ppu' : '<?php echo $oi['perunit_price']; ?>'}
+        		);
+        	<?php } ?>
+        	$('#cgst_amount').val(<?php echo (($orderDetail[0]['cgst'] * 100) / $orderDetail[0]['product_total_amount']); ?>);
+        	$('#sgst_amount').val(<?php echo (($orderDetail[0]['sgst'] * 100) / $orderDetail[0]['product_total_amount']); ?>);
+        	$('#sgst_amount').val(<?php echo (($orderDetail[0]['sgst'] * 100) / $orderDetail[0]['product_total_amount']); ?>);
+        	getsellerDetail();
+        	billPreview(0);
+        	
+    		function getsellerDetail(){
+    			var sellerId = $('#seller_id').val();
+            	if(sellerId == 'oth'){
+                	$('#other_vendor').show();	
+                	$('#contact_no').val('');
+                	$('#alternet_contact').val('');	
+                	$('#gst_no').val('');	
+                	$('#address').val('');
+                } else {
+                	$('#other_vendor').val('').hide();
+                	$('#contact_no').val('');
+                	$('#alternet_contact').val('');	
+                	$('#gst_no').val('');	
+                	$('#address').val('');
+                	
+                	if(sellerId != ''){
+                		$.ajax({
+                        	type: 'POST',
+                            url : baseUrl + 'vendor/getdetail',
+                            data : {
+                            	vendorId: sellerId
+                            },
+                            dataType : 'json',
+                            success: function(response){
+                            	console.log(response.data[0]['contact_no']);
+                                if(response.status == 200){
+                                    $('#contact_no').val(response.data[0]['contact_no']);
+        		                	$('#alternet_contact').val(response.data[0]['Alternate_contact_no']);	
+        		                	$('#gst_no').val(response.data[0]['gst_no']);	
+        		                	$('#address').val(response.data[0]['address']);
+                                }     
+                        	}
+                        });
+                    } else {
+                        $('#contact_no').val('');
+	                	$('#alternet_contact').val('');	
+	                	$('#gst_no').val('');	
+	                	$('#address').val('');		
+                    }
+                }
+    		}    	
         	
         	$(document).on('click','.edit',function(){
         		var vendorId = $(this).data('vid');
@@ -308,11 +370,6 @@
 					billPreview(1);
             	}
             });
-            
-            $(document).on('keyup','#cgst_amount,#sgst_amount,#igst_amount',function(){
-            	billPreview(0);
-            });
-            
 
 			function billPreview(i){
 				temp = {};
@@ -321,12 +378,11 @@
 				temp['unit'] = $('#unit').val();
 				temp['unitText'] = $('#unit option:selected').text();
 				temp['qty'] = $('#quantity').val();
-				temp['ppu'] = $('#ppu').val();
 				temp['total'] = parseFloat($('#total').val());
+				temp['ppu'] = $('#ppu').val();
 				
 				if(i) {    
 					items.push(temp);
-					console.log(items);
 				}
 				
 				$('#item,#unit,#quantity').val('');
@@ -335,59 +391,73 @@
 							'<th>sno.</th>'+
 							'<th>Item</th>'+
 							'<th>Quantity</th>'+
-							//'<th>Unit</th>'+
-							//'<th>Total</th>'+
+							'<th>Rate Per Metric Ton</th>'+
 							'<th></th>'+	
 						'</tr></thead><tbody>';
 				var totalBill = 0;	
 				$.each(items,function(key,value){
 					totalBill = totalBill + parseFloat(value.total);
 					x = x + '<tr>'+
-								'<td>'+ parseInt(key+1) +'</td>'+
+								'<td>'+ parseInt(key+1) +'.</td>'+
 								'<td>'+ value.itemText +'</td>'+
 								'<td>'+ value.qty +'<small> ('+ value.unitText +')</small></td>'+
+								'<td>'+ value.ppu +'</td>'+
 								'<td><input type="button" value="del" data-index="'+ key +'" class="btn btn-danger item-del"/></td>'+
 							'</tr>';
 				});
-				var cgstAmount = (parseFloat(totalBill) * parseFloat($('#cgst_amount').val()))/100;
-				var sgstAmount = (parseFloat(totalBill) * parseFloat($('#sgst_amount').val()))/100;
-				var igstAmount = (parseFloat(totalBill) * parseFloat($('#igst_amount').val()))/100;
+				var cgstAmount = parseFloat($('#cgst_amount').val());
 				if(isNaN(cgstAmount) || cgstAmount == ''){
 					cgstAmount = 0;
+				} else {
+					cgstAmount = Math.round((parseFloat(totalBill) * cgstAmount)/100) 
 				}
+				
+				var sgstAmount = parseFloat($('#sgst_amount').val());
 				if(isNaN(sgstAmount) || sgstAmount == ''){
 					sgstAmount = 0;
+				} else {
+					sgstAmount = Math.round((parseFloat(totalBill) * sgstAmount)/100) 
 				}
-				if(isNaN(igstAmount) || igstAmount == ''){
-					igstAmount = 0;
-				}
-				var payableAmount = totalBill + cgstAmount + sgstAmount + igstAmount;
 				
-				x = x + '<tr class="bg-secondary text-light text-right">'+
-							'<td colspan="3">GrandTotal</td>'+
-							'<td colspan="2" class="text-left">'+ parseFloat(totalBill) +'</td>'+
+				var igstAmount = parseFloat($('#igst_amount').val());
+				if(isNaN(igstAmount) || igstAmount == ''){
+					igstAmount = 0;	
+				} else {
+					igstAmount = Math.round((parseFloat(totalBill) * igstAmount)/100) 
+				}
+				
+				var discount = ((totalBill * parseFloat($('#discount_per').val()))/100).toFixed(2);
+				
+				var payableAmount = ((parseFloat(totalBill) + parseFloat(cgstAmount) + parseFloat(sgstAmount) + parseFloat(igstAmount)));
+				
+				x = x + '<tr class="bg-secondary text-light">'+
+							'<td colspan="4" class="text-right">Total</td>'+
+							'<td colspan="1" class="text-left">'+ parseFloat(totalBill) +'</td>'+
 						'</tr>';
-						if(cgstAmount != 0){
-    						x = x + '<tr class="bg-secondary text-light text-right">'+
-    							'<td colspan="3">CGST Amount</td>'+
-    							'<td colspan="2" class="text-left">'+ cgstAmount +'</td>'+
-    						'</tr>';
+						if(cgstAmount > 0){
+						x = x + '<tr class="bg-secondary text-light">'+
+							'<td colspan="4" class="text-right">CGST Amount</td>'+
+							'<td colspan="1" class="text-left">'+ cgstAmount +'</td>'+
+						'</tr>';
 						}
-						if(sgstAmount != 0){
-    						x = x + '<tr class="bg-secondary text-light text-right">'+
-    							'<td colspan="3">SGST Amount</td>'+
-    							'<td colspan="2" class="text-left">'+ sgstAmount +'</td>'+
-    						'</tr>';
+						
+						if(sgstAmount > 0){
+						x = x + '<tr class="bg-secondary text-light">'+
+							'<td colspan="4" class="text-right">SGST Amount</td>'+
+							'<td colspan="1" class="text-left">'+ sgstAmount +'</td>'+
+						'</tr>';
 						}
-						if(igstAmount != 0){
-    						x = x + '<tr class="bg-secondary text-light text-right">'+
-    							'<td colspan="3">IGST Amount</td>'+
-    							'<td colspan="2" class="text-left">'+ igstAmount +'</td>'+
-    						'</tr>';
+						
+						if(igstAmount > 0){
+						x = x + '<tr class="bg-secondary text-light">'+
+							'<td colspan="4" class="text-right">IGST Amount</td>'+
+							'<td colspan="1" class="text-left">'+ igstAmount +'</td>'+
+						'</tr>';
 						}
-						x = x + '<tr class="bg-secondary text-light text-right">'+
-							'<td colspan="3">Payable Amount</td>'+
-							'<td colspan="2" class="text-left">'+ payableAmount +'</td>'+
+						
+						x = x + '<tr class="bg-secondary text-light">'+
+							'<td colspan="4" class="text-right">Grand Amount</td>'+
+							'<td colspan="1" class="text-left">'+ payableAmount +'</td>'+
 						'</tr>';  
 				x = x + '</tbody></table>';
 				
@@ -398,12 +468,12 @@
 					$('#bill_items').hide();
 					$('#total_cal').hide();
 				}
-
+					
+				$('#ppu').val(0);
 				$('#total').val(0);
 				$('#item_gst').val(0);
 				$('#item_discount').val(0);
 				$('#item_grand_total').val(0);
-				$('#ppu').val(0);
 			}
             
             	
@@ -415,7 +485,7 @@
 
 
         	$(document).on('change','#seller_id',function(){
-            	var sellerId = $(this).val();
+        		var sellerId = $(this).val();
             	if(sellerId == 'oth'){
                 	$('#other_vendor').show();	
                 	$('#contact_no').val('');
@@ -456,17 +526,11 @@
                 }
             });
             
-            
-            $(document).on('keyup','#ppu',function(){
-            	var quantity = $('#quantity').val();
-            	var ppu = $(this).val();
-            	$('#total').val(quantity * ppu);
-            });
-            
             $(document).on('click','#create',function(){
+            	
             	var formvalid = true;
             	if(items.length < 1){
-            		alert('Please select atlease one item to purchse.');
+            		alert('Please select atlease one item to sales.');
             	}
             	
             	if($('#billno').val() == ''){
@@ -480,7 +544,7 @@
             	
             	if($('#seller_id').val() == ''){
             		$('#seller_id').addClass('haveerror');
-            		$('#seller_id_error').html('please select seller').show();
+            		$('#seller_id_error').html('please select buyer').show();
             		formvalid = false;
             	} else {
             		$('#seller_id').removeClass('haveerror');
@@ -546,13 +610,11 @@
 				if(formvalid){
 					$.ajax({
 						type: 'POST',
-						url : baseUrl + 'Purchase/bill_entry',
+						url : baseUrl + 'sales/sales_order_entry_update',
 						data : {
 							'items': items,
-							'cgst_amount' : $('#cgst_amount').val(),
-							'sgst_amount' : $('#sgst_amount').val(),
-							'igst_amount' : $('#igst_amount').val(),
-							'bill_no' : $('#billno').val(),
+							'get_amount' : $('#gst_amount').val(),
+							'bill_no' : '<?php echo $orderDetail[0]['sales_order_id']; ?>',
 							'other_vendor' : $('#other_vendor').val(),
 							'billdate' : $('#billdate').val(),
 							'seller_id' : $('#seller_id').val(),
@@ -560,14 +622,15 @@
 							'alternet_contact' : $('#alternet_contact').val(),
 							'gst_no' : $('#gst_no').val(),
 							'address' : $('#address').val(),
-							'broker_id' : $('#broker_id').val()
+							'broker_id' : $('#broker_id').val(),
+							'cgst' : $('#cgst_amount').val(),
+							'sgst' : $('#sgst_amount').val(),
+							'igst' : $('#igst_amount').val()
 						},
 						dataType : 'json',
 						success: function(response){
 							if(response.status == 200){
 								alert(response.msg);
-								location.reload();
-								window.location.href = baseUrl + '/purchase/list';
 							} else {
 								alert(response.msg);
 							}
@@ -600,10 +663,16 @@
 				});	
             });
 
-			$(document).on('keyup','#ppu',function(){	
-				$('#quantity').trigger('keyup');
+			$(document).on('keyup','#ppu',function(){
+				var ppu = parseFloat($(this).val());
+				var qty = parseFloat($('#quantity').val());	
+				$('#total').val(Math.round(parseFloat(ppu * qty)));
 			});
 			
+            
+            $(document).on('keyup','#cgst_amount,#sgst_amount,#igst_amount',function(e){
+            	billPreview(0);
+            });
             
             $("#gst_amount").keypress(function (e) {
                  if (e.which != 8 && e.which != 0 && (e.which < 46 || e.which > 57)) {
@@ -611,7 +680,6 @@
                     	return false;
                 }
            	});
-            
             
             $("#billdate").datepicker({
                 //showOn: 'button',

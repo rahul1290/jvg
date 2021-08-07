@@ -19,7 +19,7 @@
                             <!-- Default Card Example -->
                             <div class="card mb-4">
                                 <div id="cardheading" class="card-header text-center text-light bg-secondary">
-                                    CUSTOMER DETAIL
+                                    BILL GENERATION
                                 </div>
                                 <div class="card-body">
                                 	<p class="text-center text-danger.Try again..."><?php echo $this->session->flashdata('msg'); ?></p>
@@ -43,44 +43,44 @@
                                                         		<?php } ?>
                                                         		<option value="oth">Other</option>
                                                         	</select>
-                                                        	<input class="mt-1" style="display:none;" id="other_vendor" type="text" placeholder="Enter vendor name"/>
+                                                        	<input class="mt-1 form-control" style="display:none;" id="other_vendor" type="text" placeholder="Enter buyer name"/>
                                                         	<div id="other_vendor_error" class="text-danger" style="display: none;"></div>
                                                         </div>
                                                         
                                                         <div class="form-group col-md-4">
-                                                        	<label class="col-sm-4 col-form-label col-form-label-sm">Sale Date<span class="text-danger">*</span></label>
+                                                        	<label class="col-sm-6 col-form-label col-form-label-sm">Date of Sales<span class="text-danger">*</span></label>
                                                     		<input type="text" class="form-control" id="billdate" name="billdate" placeholder="Date" value="<?php echo date('d/m/Y');?>">
                                                   			<div id="billdate_error" class="text-danger" style="display: none;"></div>
                                                         </div>
                                                     </div>
                                                     
                                                     <div class="form-row">
-                                                    	<div class="form-group col-md-4">
-                                                        	<label class="col-sm-4 col-form-label col-form-label-sm">Contact No.<span class="text-danger">*</span></label>
+                                                    	<div class="form-group col-md-3">
+                                                        	<label class="col-sm-6 col-form-label col-form-label-sm">Contact No.</label>
                                                             <input type="text" class="form-control form-control-sm" id="contact_no" name="contact_no" placeholder="Contact No." value="<?php echo set_value('contact_no'); ?>">
                                                             <div id="contact_no_error" class="text-danger" style="display: none;"></div>
                                                         </div>
-                                                        <div class="form-group col-md-4">
-                                                        	<label class="col-sm-4 col-form-label col-form-label-sm">Alternet No.</label>
+                                                        <div class="form-group col-md-3">
+                                                        	<label class="col-sm-6 col-form-label col-form-label-sm">Alternet No.</label>
                                                             <input type="text" class="form-control form-control-sm" id="alternet_contact" name="alternet_contact" placeholder="Alternet No." value="<?php echo set_value('alternet_contact'); ?>">
                                                         	<div id="alternet_contact_error" class="text-danger" style="display: none;"></div>
                                                         </div>
-                                                        <div class="form-group col-md-4">
-                                                        	<label class="col-sm-3 col-form-label col-form-label-sm">GST No.<span class="text-danger">*</span></label>
+                                                        <div class="form-group col-md-3">
+                                                        	<label class="col-sm-6 col-form-label col-form-label-sm">GST No.<span class="text-danger">*</span></label>
                                                             <input type="text" class="form-control form-control-sm" id="gst_no" name="gst_no" placeholder="GST No." value="<?php echo set_value('gst_no');?>">
                                                         	<div id="gst_no_error" class="text-danger" style="display: none;"></div>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                        	<label class="col-sm-6 col-form-label col-form-label-sm">GR/RR No.</label>
+                                                            <input type="text" class="form-control form-control-sm" id="grrr_no" name="grrr_no" placeholder="GR/RR No">
                                                         </div>
                                                     </div>
                                                     
                                                     <div class="form-row">
-                                                    	<div class="form-group col-md-6">
-                                                        	<label class="col-sm-4 col-form-label col-form-label-sm">GR/RR No.</label>
-                                                            <input type="text" class="form-control form-control-sm" id="grrr_no" name="grrr_no" placeholder="GR/RR No">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                        	<label class="col-sm-4 col-form-label col-form-label-sm">Date</label>
-                                                            <input type="text" class="form-control form-control-sm" id="grr_date" name="grr_date" placeholder="Alternet No." >
-                                                        </div>
+<!--                                                         <div class="form-group col-md-6"> -->
+<!--                                                         	<label class="col-sm-4 col-form-label col-form-label-sm">Date</label> -->
+<!--                                                             <input type="text" class="form-control form-control-sm" id="grr_date" name="grr_date" placeholder="Alternet No." > -->
+<!--                                                         </div> -->
                                                     </div>
                                         			
                                                     <div class="form-group row">
@@ -102,12 +102,14 @@
                                                         	</select>
                                                         	<div id="shipping_state_error" class="text-danger" style="display: none;"></div>
                                                     	</div>
-                                                    	<div class="from-group col-md-4 mt-4">
-                                                    		<div class="row">
-                                                    			<input class="m-2" type="checkbox" id="shipping_checkbox"/><label>Shipping Address same as Billing Address</label>
-                                                    		</div>
-                                                    	</div>
+                                                    	
                                                     </div>
+                                                    
+                                                    <div class="from-group col-md-4 mt-4">
+                                                		<div class="row">
+                                                			<label>Shipping Address same as Billing Address</label> <input class="m-2" type="checkbox" id="shipping_checkbox"/>
+                                                		</div>
+                                                	</div>
                                                     
                                                     <div class="form-group row">
                                                         <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Shipping Address<span class="text-danger">*</span></label>
@@ -116,9 +118,9 @@
                                                         	<div id="address_error" class="text-danger" style="display: none;"></div>
                                                         </div>
                                                     </div>
-                                                    
+                                                    <?php /*?>
                                                     <div class="form-group row">
-                                                        <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Broker<span class="text-danger">*</span></label>
+                                                        <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm">Broker</label>
                                                         <div class="col-sm-12">
                                                         	<select id="broker_id" class="form-control">
                                                         		<option value="">Select Broker</option>
@@ -129,6 +131,7 @@
                                                         	<div id="broker_id_error" class="text-danger" style="display: none;"></div>
                                                         </div>
                                                     </div>
+                                                    <?php */ ?>
                                                 </div>
                                     		</div>
                                     		
@@ -145,12 +148,12 @@
                                 
                                 		<div class="form-row">
                                             <div class="form-group col-md-6">
-                                              <label>Transport Name<span class="text-danger">*</span></label>
+                                              <label>Transport Name</label>
                                               <input type="text" class="form-control" id="transname" name="transname" aria-describedby="emailHelp" placeholder="Transporter Name">
                                               <div class="text-danger" id="transname_error" style="display: none;"></div>
                                             </div>
                                             <div class="form-group col-md-6">
-                                              <label for="exampleInputPassword1">Vechile No.<span class="text-danger">*</span></label>
+                                              <label for="exampleInputPassword1">Vechile No.</label>
                                               <input type="text" class="form-control" id="vechileno" name="vechileno" placeholder="Vechile no.">
                                               <div class="text-danger" id="vechileno_error" style="display: none;"></div>
                                             </div>
@@ -161,7 +164,7 @@
                                         
                                       </div>
                                       <div class="form-group">
-                                        <label for="exampleInputPassword1">Eway Bill No.<span class="text-danger">*</span></label>
+                                        <label for="exampleInputPassword1">Eway Bill No.</label>
                                         <input type="text" class="form-control" id="ewaybillno" name="ewaybillno" placeholder="Eway Bill No.">
                                         <div class="text-danger" id="ewaybillno_error" style="display: none;"></div>
                                       </div>
@@ -227,18 +230,18 @@
                                         	<hr/>
                                         	<table id="total_cal" style="display: none;">
                                         		<tr>
+                                        			
+                                        		</tr>
+                                        		<tr>
                                         			<td>Insurance:</td>
                                         			<td>
-                                        				<input type="text" name="insurance" id="insurance" value="0.00" />
+                                        				<input type="text" name="insurance" id="insurance" value="0.00" class="form-control" />
                                         			</td>
-                                        		</tr>
-                                        		<tr>
+                                        		
                                         			<td>Frieght:</td>
                                         			<td>
-                                        				<input type="text" name="frieght" id="frieght" value="0.00" />
+                                        				<input type="text" name="frieght" id="frieght" value="0.00" class="form-control" />
                                         			</td>
-                                        		</tr>
-                                        		<tr>
                                         			<td>CGST</td>
                                         			<td>
                                         				<div class="input-group">
@@ -379,7 +382,6 @@
         	
 
         	$(document).on('click','#add_item',function(){
-        	console.log('379');
         		var formvalid = true;
         		if($('#item').val() == ''){
         			$('#item').addClass('haveerror');
@@ -434,7 +436,9 @@
 				
 				if(i) {    
 					items.push(temp);
-				}
+					console.log(items);
+    				}
+    				console.log(items);
 				
 				$('#item,#unit,#ppu,#quantity').val('');
 				var x = '<table class="table table-bordered table-striped text-center table-sm">'+
@@ -453,7 +457,7 @@
 					totalBill = totalBill + parseFloat(value.total);
 					x = x + '<tr>'+
 								'<td>'+ parseFloat(key+1) +'</td>'+
-								'<td>'+ $('#purchase_from option:selected').text() +'</td>'+
+								'<td>'+ value.vendor_text  +'</td>'+
 								'<td>'+ value.itemText +'</td>'+
 								'<td>'+ value.qty +'</td>'+
 								'<td>'+ value.unitText +'</td>'+
@@ -477,6 +481,12 @@
 						x = x + '<tr class="bg-secondary text-light">'+
 							'<td colspan="6" class="text-right">Insurance</td>'+
 							'<td colspan="2" class="text-left">'+ $('#insurance').val() +'</td>'+
+						'</tr>';
+						}
+						if($('#frieght').val() != '0.00'){
+						x = x + '<tr class="bg-secondary text-light">'+
+							'<td colspan="6" class="text-right">Frieght</td>'+
+							'<td colspan="2" class="text-left">'+ $('#frieght').val() +'</td>'+
 						'</tr>';
 						}
 						if(cgstAmount != '0.00'){
@@ -535,13 +545,13 @@
         		$('#shipping_address').val('');
             	var vendorId = $(this).val();
             	if(vendorId == 'oth'){
-                	$('#other_customer').show();	
+                	$('#other_vendor').show();	
                 	$('#contact_no').val('');
                 	$('#alternet_contact').val('');	
                 	$('#gst_no').val('');	
                 	$('#address').val('');
                 } else {
-                	$('#other_customer').val('').hide();
+                	$('#other_vendor').val('').hide();
                 	$('#contact_no').val('');
                 	$('#alternet_contact').val('');	
                 	$('#gst_no').val('');	
@@ -575,7 +585,6 @@
             });
             
             $(document).on('click','#create',function(){
-            console.log('559');
             	var formvalid = true;
             	if(items.length < 1){
             		alert('Please select atlease one item to sale.');
@@ -601,7 +610,7 @@
             	
             	if($('#vendor_id').val() == 'oth'){
             		if($('#other_vendor').val() == ''){
-            			$('#other_vendoe').addClass('haveerror');
+            			$('#other_vendor').addClass('haveerror');
             			$('#other_vendor_error').html('Enter vendor name').show();
             			formvalid = false;
             		} else {
@@ -617,32 +626,32 @@
             		$('#shipping_state').removeClass('haveerror');
             	}
             	
-            	if($('#transname').val() == ''){
-            		formvalid = false;
-            		$('#transname').addClass('haveerror');
-            		$('#transname_error').html('Enter transporter name').show();
-            	} else {
-            		$('#transname').removeClass('haveerror');
-            		$('#transname_error').html('').hide();
-            	}
+//             	if($('#transname').val() == ''){
+//             		formvalid = false;
+//             		$('#transname').addClass('haveerror');
+//             		$('#transname_error').html('Enter transporter name').show();
+//             	} else {
+//             		$('#transname').removeClass('haveerror');
+//             		$('#transname_error').html('').hide();
+//             	}
             	
-            	if($('#vechileno').val() == ''){
-            		formvalid = false;
-            		$('#vechileno').addClass('haveerror');
-            		$('#vechileno_error').html('Enter vechile no').show();
-            	} else {
-            		$('#vechileno').removeClass('haveerror');
-            		$('#vechileno_error').html('').hide();
-            	}
+//             	if($('#vechileno').val() == ''){
+//             		formvalid = false;
+//             		$('#vechileno').addClass('haveerror');
+//             		$('#vechileno_error').html('Enter vechile no').show();
+//             	} else {
+//             		$('#vechileno').removeClass('haveerror');
+//             		$('#vechileno_error').html('').hide();
+//             	}
             	
-            	if($('#ewaybillno').val() == ''){
-            		formvalid = false;
-            		$('#ewaybillno').addClass('haveerror');
-            		$('#ewaybillno_error').html('Enter eway billno.').show();
-            	} else {
-            		$('#ewaybillno').removeClass('haveerror');
-            		$('#ewaybillno_error').html('').hide();
-            	}
+//             	if($('#ewaybillno').val() == ''){
+//             		formvalid = false;
+//             		$('#ewaybillno').addClass('haveerror');
+//             		$('#ewaybillno_error').html('Enter eway billno.').show();
+//             	} else {
+//             		$('#ewaybillno').removeClass('haveerror');
+//             		$('#ewaybillno_error').html('').hide();
+//             	}
             	
             	if($('#shipping_destination').val() == ''){
             		formvalid = false;
@@ -653,14 +662,14 @@
             		$('#shipping_destination_error').html('').hide();
             	}
 
-				if($('#contact_no').val() == ''){
-					$('#contact_no').addClass('haveerror');
-					$('#contact_no_error').html('Enter contact No.').show();
-					formvalid = false;
-				} else {
-					$('#contact_no').removeClass('haveerror');
-					$('#contact_no_error').html('').hide();
-				}
+// 				if($('#contact_no').val() == ''){
+// 					$('#contact_no').addClass('haveerror');
+// 					$('#contact_no_error').html('Enter contact No.').show();
+// 					formvalid = false;
+// 				} else {
+// 					$('#contact_no').removeClass('haveerror');
+// 					$('#contact_no_error').html('').hide();
+// 				}
 
 				if($('#gst_no').val() == ''){
 					$('#gst_no').addClass('haveerror');
@@ -880,7 +889,7 @@
 							var x = '<option value="">Select Vendor</option>';
 							if(response.status == 200){
 								$.each(response.data,function(key,value){
-									x = x + '<option value="'+ value.vendor_id +'">'+ value.vendor_name +'</option>';
+									x = x + '<option value="'+ value.vendor_id +'">'+ value.vendor_name +'('+ value.availablity +')</option>';
 								});
 							
 							$('#purchase_from').html(x);
